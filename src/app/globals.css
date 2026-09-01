@@ -112,6 +112,9 @@ p.cap {
   height: 100%;
   z-index: 9999;
   pointer-events: none;
+  /* Own compositing layer, so morphing the path does not repaint the page under it. */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .page-transition-overlay svg {
@@ -122,6 +125,8 @@ p.cap {
 .page-transition-overlay .overlay__path {
   fill: var(--base-500);
   stroke: none;
+  /* Favour smooth anti-aliased curves over edge snapping while the path morphs. */
+  shape-rendering: geometricPrecision;
 }
 
 @media (max-width: 1000px) {
