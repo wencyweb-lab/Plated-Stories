@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { ReactLenis } from "lenis/react";
-// import Menu from "./components/Menu/Menu";
+import Menu from "@/components/Menu/Menu";
 
 export default function ClientLayout({ children }) {
   const pageRef = useRef();
@@ -54,7 +54,7 @@ export default function ClientLayout({ children }) {
 
   return (
     <ReactLenis root options={scrollSettings}>
-      {/* <Menu pageRef={pageRef} /> */}
+      <Menu />
 
       <div className="page" ref={pageRef}>
         {children}

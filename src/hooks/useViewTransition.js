@@ -12,7 +12,7 @@ export const useViewTransition = () => {
       overlay.className = "page-transition-overlay";
       overlay.innerHTML = `
         <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <path class="overlay__path" vector-effect="non-scaling-stroke" d="M 0 0 h 0 c 0 50 0 50 0 100 H 0 V 0 Z" />
+          <path class="overlay__path" vector-effect="non-scaling-stroke" d="M 0 100 v 0 c 50 0 50 0 100 0 V 100 H 0 Z" />
         </svg>
       `;
       document.body.appendChild(overlay);
@@ -28,14 +28,14 @@ export const useViewTransition = () => {
 
     const paths = {
       step1: {
-        unfilled: "M 0 0 h 0 c 0 50 0 50 0 100 H 0 V 0 Z",
-        inBetween: "M 0 0 h 43 c -60 55 140 65 0 100 H 0 V 0 Z",
-        filled: "M 0 0 h 100 c 0 50 0 50 0 100 H 0 V 0 Z",
+        unfilled: "M 0 100 v 0 c 50 0 50 0 100 0 V 100 H 0 Z",
+        inBetween: "M 0 100 v -43 c 55 60 65 -140 100 0 V 100 H 0 Z",
+        filled: "M 0 100 v -100 c 50 0 50 0 100 0 V 100 H 0 Z",
       },
       step2: {
-        filled: "M 100 0 H 0 c 0 50 0 50 0 100 h 100 V 50 Z",
-        inBetween: "M 100 0 H 50 c 28 43 4 81 0 100 h 50 V 0 Z",
-        unfilled: "M 100 0 H 100 c 0 50 0 50 0 100 h 0 V 0 Z",
+        filled: "M 0 0 V 100 c 50 0 50 0 100 0 v -100 H 50 Z",
+        inBetween: "M 0 0 V 50 c 43 -28 81 -4 100 0 v -50 H 0 Z",
+        unfilled: "M 0 0 V 0 c 50 0 50 0 100 0 v 0 H 0 Z",
       },
     };
 
