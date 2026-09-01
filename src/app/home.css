@@ -94,16 +94,28 @@
 
 .home-studio-section .studio-header .studio-header-row:nth-child(1) {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .home-studio-section .studio-header .studio-header-row:nth-child(2) {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .home-studio-section .studio-header .studio-header-row h1 {
-  font-size: 8vw;
+  font-size: 6vw;
+}
+
+.home-studio-section .studio-header .studio-header-tagline {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.home-studio-section .studio-header .studio-header-tagline p {
+  max-width: 32rem;
+  color: var(--base-300);
 }
 
 .home-studio-section .studio-header .studio-brand-text {

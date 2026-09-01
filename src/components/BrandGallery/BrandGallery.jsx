@@ -76,7 +76,7 @@ export default function BrandGallery() {
         <div className="brand-gallery-note">
           <Copy animateOnScroll={true}>
             <p className="lg">
-              Plated Stories is a creative content agency specializing
+              We are a creative content agency specializing
               <br />
               in visual storytelling for F&amp;B and lifestyle brands.
               <br />

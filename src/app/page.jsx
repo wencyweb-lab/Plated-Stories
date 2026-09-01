@@ -62,7 +62,7 @@ const Page = () => {
         <HeroVisual />
 
         <div className="hero-button">
-          <Button delay={isInitialLoad ? 5.7 : 0.6} href="/studio">
+          <Button delay={isInitialLoad ? 5.7 : 0.6} href="/about">
             Visit the Studio
           </Button>
         </div>
@@ -89,9 +89,13 @@ const Page = () => {
               </Copy>
             </div>
 
-            <div className="studio-header-row">
-              <Copy delay={0.95}>
-                <h1>a creative content agency</h1>
+            <div className="studio-header-tagline">
+              <Copy delay={1.05}>
+                <p>
+                  We craft visual stories for F&amp;B and lifestyle brands.
+                  <br />
+                  Strategy, production and storytelling, end to end.
+                </p>
               </Copy>
             </div>
 
@@ -107,7 +111,7 @@ const Page = () => {
 
             <Copy animateOnScroll={true}>
               <p className="lg">
-                Plated Stories is a creative content agency specializing in
+                We are a creative content agency specializing in
                 visual storytelling for F&amp;B and lifestyle brands. From
                 concept development and shoot planning to production, editing and
                 content delivery, we manage the entire creative process

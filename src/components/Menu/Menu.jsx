@@ -7,7 +7,7 @@ const Menu = () => {
 
   const menuItems = [
     { label: "Home", route: "/" },
-    { label: "About Us", route: "/studio" },
+    { label: "About Us", route: "/about" },
     { label: "Projects", route: "/work" },
     { label: "Contact", route: "/contact" },
   ];
