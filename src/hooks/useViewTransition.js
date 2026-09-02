@@ -1,9 +1,22 @@
 "use client";
-import { useTransitionRouter } from "next-view-transitions";
+import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 
+// The page transition is driven entirely by the GSAP overlay below — we do NOT
+// use the browser's View Transition API here. Layering the two (this timeline
+// plus next-view-transitions' `document.startViewTransition`) meant every
+// navigation raced a transition the router could not finish in time, which
+// surfaced as "Transition was aborted because of timeout in DOM update" /
+// InvalidStateError unhandled rejections and, worse, a swallowed `router.push`
+// so the overlay played but the route never changed.
+
+// Guards against a second click while a transition is mid-flight — otherwise
+// two timelines fight over the same overlay node and one of them removes it
+// out from under the other.
+let activeTimeline = null;
+
 export const useViewTransition = () => {
-  const router = useTransitionRouter();
+  const router = useRouter();
 
   function createSVGOverlay() {
     let overlay = document.querySelector(".page-transition-overlay");
@@ -20,11 +33,23 @@ export const useViewTransition = () => {
     return overlay;
   }
 
+  function removeOverlay() {
+    const overlay = document.querySelector(".page-transition-overlay");
+    if (overlay && overlay.parentNode) {
+      overlay.parentNode.removeChild(overlay);
+    }
+  }
+
   function slideInOut(href, onRouteChange) {
     const overlay = createSVGOverlay();
     const overlayPath = overlay.querySelector(".overlay__path");
 
-    if (!overlayPath) return;
+    // No overlay to animate — still navigate rather than dropping the click.
+    if (!overlayPath) {
+      router.push(href);
+      if (onRouteChange) onRouteChange();
+      return;
+    }
 
     const paths = {
       step1: {
@@ -41,11 +66,12 @@ export const useViewTransition = () => {
 
     const timeline = gsap.timeline({
       onComplete: () => {
-        if (overlay && overlay.parentNode) {
-          overlay.parentNode.removeChild(overlay);
-        }
+        activeTimeline = null;
+        removeOverlay();
       },
     });
+
+    activeTimeline = timeline;
 
     timeline
       .set(overlayPath, {
@@ -64,6 +90,7 @@ export const useViewTransition = () => {
         ease: "power2.out",
         attr: { d: paths.step1.filled },
         onComplete: () => {
+          // Screen is fully covered — safe to swap the route.
           router.push(href);
 
           if (onRouteChange) {
@@ -89,11 +116,33 @@ export const useViewTransition = () => {
       });
   }
 
+  // `href` is authored decoded (see workCategories.js) while
+  // `window.location.pathname` comes back percent-encoded, so both sides are
+  // decoded before the same-page check — otherwise "/a b" never matches
+  // "/a%20b" and we'd replay the whole transition onto the current page.
+  const samePath = (a, b) => {
+    const decode = (value) => {
+      try {
+        return decodeURIComponent(value);
+      } catch {
+        return value;
+      }
+    };
+    return decode(a).replace(/\/$/, "") === decode(b).replace(/\/$/, "");
+  };
+
   const navigateWithTransition = (href, onRouteChange, options = {}) => {
-    const currentPath = window.location.pathname;
-    if (currentPath === href) {
+    if (!href) return;
+
+    const [path] = href.split("#");
+    if (samePath(window.location.pathname, path)) {
+      if (onRouteChange) onRouteChange();
       return;
     }
+
+    // A transition is already running; ignore the extra click instead of
+    // stacking a second overlay on top of it.
+    if (activeTimeline && activeTimeline.isActive()) return;
 
     slideInOut(href, onRouteChange);
   };

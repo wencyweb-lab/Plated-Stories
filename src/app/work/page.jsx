@@ -10,7 +10,7 @@ import { workCategories } from "./workCategories.js";
 gsap.registerPlugin(useGSAP);
 
 const Page = () => {
-  const { navigateWithTransition } = useViewTransition();
+  const { navigateWithTransition, router } = useViewTransition();
 
   const workPageContainer = useRef(null);
 
@@ -175,6 +175,7 @@ const Page = () => {
                   <a
                     key={item.index}
                     href={item.href}
+                    onMouseEnter={() => router.prefetch(item.href)}
                     onClick={(e) => {
                       e.preventDefault();
                       navigateWithTransition(item.href);

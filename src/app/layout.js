@@ -1,6 +1,5 @@
 import "./globals.css";
 import ClientLayout from "@/client-layout";
-import { ViewTransitions } from "next-view-transitions";
 
 export const metadata = {
   title: "Plated Stories",
@@ -28,9 +27,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <ViewTransitions>
-          <ClientLayout>{children}</ClientLayout>
-        </ViewTransitions>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

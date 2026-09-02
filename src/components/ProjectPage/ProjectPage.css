@@ -1,0 +1,213 @@
+.sample-project-page {
+  background-color: var(--base-100);
+}
+
+.sample-project-page h3 {
+  font-size: 4rem;
+}
+
+.sample-project-page .project-header {
+  width: 100vw;
+  height: 50svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5em;
+  padding-bottom: 3em;
+  text-align: center;
+}
+
+.sample-project-page .project-header p {
+  margin-bottom: 2rem;
+}
+
+.sample-project-page .project-banner-img {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.sample-project-page .project-video-controls {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.5rem);
+  transition: opacity 300ms ease, transform 300ms ease, visibility 300ms;
+}
+
+.sample-project-page .project-banner-img:hover .project-video-controls,
+.sample-project-page .project-banner-img:focus-within .project-video-controls {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.sample-project-page .project-video-control-btn {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 100%;
+  background-color: rgba(23, 20, 18, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--base-100);
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.sample-project-page .project-video-control-btn:hover {
+  background-color: rgba(23, 20, 18, 0.85);
+  transform: scale(1.08);
+}
+
+.sample-project-page .project-video-control-btn:active {
+  transform: scale(0.94);
+}
+
+@media (max-width: 1000px) {
+  .sample-project-page .project-video-controls {
+    bottom: 1.25rem;
+    right: 1.25rem;
+  }
+}
+
+.sample-project-page img,
+.sample-project-page video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sample-project-page .project-banner-img-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.sample-project-page .project-details {
+  width: 55%;
+  padding: 8rem 1rem 2rem 1rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.sample-project-page .details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.sample-project-page .project-images {
+  background-color: var(--fg);
+  color: var(--bg);
+  padding: 4em 2em;
+}
+
+.sample-project-page .project-images-container {
+  width: 75%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.sample-project-page .project-img {
+  position: relative;
+  width: 100%;
+  height: 80svh;
+  overflow: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.sample-project-page .project-img-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.sample-project-page .next-project {
+  width: 100vw;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5em;
+  text-align: center;
+}
+
+.sample-project-page .next-project-img {
+  position: relative;
+  width: 35%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.sample-project-page .next-project-img-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1000px) {
+  .sample-project-page .project-header {
+    padding: 1.25em 1.25em 3em 1.25em;
+  }
+
+  .sample-project-page .project-details {
+    width: 100%;
+    padding: 6em 1.25em;
+    gap: 3em;
+  }
+
+  .sample-project-page h3 {
+    font-size: 2rem;
+  }
+
+  .sample-project-page .project-images {
+    padding: 4em 1.25em;
+  }
+
+  .sample-project-page .project-images-container {
+    width: 100%;
+    gap: 1.25em;
+  }
+
+  .sample-project-page .next-project {
+    padding: 1.25em;
+  }
+
+  .sample-project-page .next-project-img {
+    width: 75%;
+  }
+
+  .sample-project-page .project-img {
+    height: 65svh;
+  }
+}
