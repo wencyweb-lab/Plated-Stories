@@ -1,0 +1,650 @@
+/* Bespoke case-study layout for /work/food-beverages/cafe-toh.
+   Scoped under .toh-case (plus .toh-lightbox, which portals to the top of
+   the page) so it cannot reach any other project page. Cafe Toh is a record
+   cafe, so the page is built dark like a listening room and reads as a
+   record: a deck in the hero, a tracklist rail, and a crate of frames per
+   side that you drag through. */
+
+.toh-case {
+  --toh-ink: #f6f1ec;
+  --toh-ground: #12100f;
+  --toh-panel: #1c1917;
+  --toh-line: rgba(246, 241, 236, 0.14);
+  --toh-dim: rgba(246, 241, 236, 0.58);
+
+  position: relative;
+  width: 100%;
+  background-color: var(--toh-ground);
+  color: var(--toh-ink);
+  overflow-x: hidden;
+}
+
+.toh-case .toh-display {
+  font-family: "DM Sans";
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.9;
+  /* `em`, not `rem`: tracking has to stay proportional as the size drops. */
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.toh-case .toh-accent {
+  color: var(--base-500);
+}
+
+.toh-case .toh-muted,
+.toh-case .toh-eyebrow {
+  color: var(--toh-dim);
+}
+
+.toh-case .toh-copy {
+  font-size: clamp(1.05rem, 1.35vw, 1.4rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--toh-dim);
+  text-wrap: pretty;
+}
+
+/* globals.css only styles `.sm` on p/a — spans need it spelled out. */
+.toh-case span.sm,
+.toh-lightbox span.sm {
+  font-family: "Geist Mono";
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.1rem;
+}
+
+/* ------------------------------------------------------------------ hero */
+
+.toh-case .toh-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: clamp(2.5rem, 6vh, 5rem);
+  overflow: hidden;
+}
+
+/* The deck sits behind the type, half off the right edge. */
+.toh-case .toh-deck {
+  position: absolute;
+  top: 50%;
+  right: -14vw;
+  width: 62vw;
+  max-width: 900px;
+  aspect-ratio: 1;
+  transform: translateY(-58%);
+  pointer-events: none;
+}
+
+/* A record, drawn rather than loaded: black vinyl, grooves as a repeating
+   gradient, and a label at the centre. */
+.toh-case .toh-vinyl {
+  position: absolute;
+  inset: 0;
+  border-radius: 100%;
+  background:
+    radial-gradient(
+        circle at 50% 50%,
+        #2a2523 0 17%,
+        transparent 17.2%
+      ),
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      #0b0a09 0 2px,
+      #191614 2px 3px,
+      #0b0a09 3px 5px
+    );
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65);
+}
+
+.toh-case .toh-vinyl::after {
+  /* Spindle hole. */
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.6%;
+  height: 1.6%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+  background-color: var(--toh-ground);
+}
+
+.toh-case .toh-vinyl-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34%;
+  height: 34%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+  background-color: var(--base-500);
+  color: var(--toh-ground);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+/* The tonearm, swinging in over the record as the hero scrolls away. */
+.toh-case .toh-arm {
+  position: absolute;
+  top: 6%;
+  right: 12%;
+  width: 3px;
+  height: 48%;
+  transform-origin: top center;
+  background: linear-gradient(
+    to bottom,
+    rgba(246, 241, 236, 0.85),
+    rgba(246, 241, 236, 0.35)
+  );
+  border-radius: 3px;
+}
+
+.toh-case .toh-arm::before {
+  content: "";
+  position: absolute;
+  top: -0.6rem;
+  left: 50%;
+  width: 1.4rem;
+  height: 1.4rem;
+  transform: translateX(-50%);
+  border-radius: 100%;
+  background-color: rgba(246, 241, 236, 0.85);
+}
+
+.toh-case .toh-arm::after {
+  content: "";
+  position: absolute;
+  bottom: -0.35rem;
+  left: 50%;
+  width: 0.75rem;
+  height: 1.5rem;
+  transform: translateX(-50%);
+  border-radius: 0.2rem;
+  background-color: rgba(246, 241, 236, 0.9);
+}
+
+.toh-case .toh-hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.toh-case .toh-hero-title {
+  font-size: clamp(3rem, 11vw, 12rem);
+  margin-bottom: 0.5rem;
+}
+
+.toh-case .toh-hero-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--toh-line);
+  max-width: 60rem;
+}
+
+.toh-case .toh-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.toh-case .toh-meta-value {
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+/* ----------------------------------------------------------------- brief */
+
+.toh-case .toh-brief {
+  padding: clamp(5rem, 12vh, 10rem) 0 clamp(3rem, 7vh, 6rem);
+}
+
+.toh-case .toh-brief-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 60rem;
+}
+
+.toh-case .toh-brief-title {
+  font-size: clamp(2.5rem, 6vw, 6rem);
+}
+
+.toh-case .toh-brief-inner .toh-copy {
+  margin-top: 1rem;
+}
+
+/* ----------------------------------------------------------- tracklist */
+
+.toh-case .toh-body {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+  padding-top: clamp(2rem, 5vh, 4rem);
+  padding-bottom: clamp(4rem, 10vh, 8rem);
+}
+
+.toh-case .toh-tracklist {
+  position: sticky;
+  top: 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.toh-case .toh-tracklist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.toh-case .toh-tracklist li {
+  border-top: 1px solid var(--toh-line);
+}
+
+.toh-case .toh-tracklist li:last-child {
+  border-bottom: 1px solid var(--toh-line);
+}
+
+.toh-case .toh-tracklist a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.9rem 0;
+  text-decoration: none;
+  color: var(--toh-dim);
+  transition: color 250ms ease, padding-left 300ms ease;
+}
+
+.toh-case .toh-tracklist a:hover {
+  color: var(--toh-ink);
+  padding-left: 0.4rem;
+}
+
+.toh-case .toh-tracklist .is-active a {
+  color: var(--toh-ink);
+}
+
+.toh-case .toh-tracklist .is-active .toh-side-label {
+  color: var(--base-500);
+}
+
+.toh-case .toh-track-name {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+/* --------------------------------------------------------------- sides */
+
+.toh-case .toh-sides {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4rem, 10vh, 8rem);
+}
+
+.toh-case .toh-side {
+  scroll-margin-top: 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vh, 2.5rem);
+}
+
+.toh-case .toh-side-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.toh-case .toh-side-title {
+  font-size: clamp(2rem, 4.5vw, 4.5rem);
+}
+
+.toh-case .toh-side-head .toh-copy {
+  max-width: 44rem;
+}
+
+/* --------------------------------------------------------------- crate */
+
+.toh-case .toh-crate {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Native overflow does the scrolling — wheel, trackpad and touch all keep
+   working — and the pointer handlers only add drag on top of it. */
+.toh-case .toh-rail {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem 0.5rem 2rem;
+  margin: -1.5rem -0.5rem -2rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.toh-case .toh-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.toh-case .toh-rail:active {
+  cursor: grabbing;
+}
+
+/* Tiles lean like records in a box and straighten under the cursor. */
+.toh-case .toh-frame {
+  position: relative;
+  flex: 0 0 clamp(15rem, 24vw, 23rem);
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  border: none;
+  border-radius: 0.35rem;
+  overflow: hidden;
+  background-color: var(--toh-panel);
+  scroll-snap-align: start;
+  cursor: pointer;
+  transform: rotate(-1.4deg);
+  transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 450ms ease;
+}
+
+.toh-case .toh-frame:nth-child(even) {
+  transform: rotate(1.6deg);
+}
+
+.toh-case .toh-frame:hover,
+.toh-case .toh-frame:focus-visible {
+  transform: rotate(0deg) translateY(-0.6rem) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+  outline: none;
+  z-index: 2;
+}
+
+.toh-case .toh-frame img,
+.toh-case .toh-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.toh-case .toh-frame-cue {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.9rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 2rem;
+  background-color: rgba(18, 16, 15, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--toh-ink);
+  opacity: 0;
+  transform: translateY(0.4rem);
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.toh-case .toh-frame:hover .toh-frame-cue,
+.toh-case .toh-frame:focus-visible .toh-frame-cue {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toh-case .toh-crate-foot {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* How far through the crate you are. */
+.toh-case .toh-scrub {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background-color: var(--toh-line);
+  overflow: hidden;
+}
+
+.toh-case .toh-scrub span {
+  position: absolute;
+  inset: 0;
+  background-color: var(--base-500);
+  transform-origin: left center;
+  transition: transform 150ms linear;
+}
+
+.toh-case .toh-crate-controls,
+.toh-lightbox .toh-crate-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.toh-case .toh-hint {
+  color: var(--toh-dim);
+  margin-right: 0.25rem;
+}
+
+.toh-case .toh-round,
+.toh-lightbox .toh-round {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(246, 241, 236, 0.2);
+  border-radius: 100%;
+  background-color: transparent;
+  color: #f6f1ec;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 200ms ease,
+    border-color 200ms ease;
+}
+
+.toh-case .toh-round:hover,
+.toh-lightbox .toh-round:hover {
+  background-color: var(--base-500);
+  border-color: var(--base-500);
+  transform: scale(1.08);
+}
+
+.toh-case .toh-round:active,
+.toh-lightbox .toh-round:active {
+  transform: scale(0.94);
+}
+
+/* ------------------------------------------------------------ lightbox */
+
+.toh-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 5vh, 4rem) 0 clamp(4.5rem, 9vh, 7rem);
+}
+
+.toh-lightbox-bg {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(10, 9, 8, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.toh-lightbox-stage {
+  position: relative;
+  max-width: min(92vw, 1100px);
+  max-height: 78svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toh-lightbox-stage img,
+.toh-lightbox-stage video {
+  max-width: min(92vw, 1100px);
+  max-height: 78svh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.35rem;
+}
+
+.toh-lightbox-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(1.25rem, 4vh, 2.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  color: #f6f1ec;
+}
+
+.toh-lightbox-bar p.sm {
+  color: rgba(246, 241, 236, 0.7);
+}
+
+/* ------------------------------------------------------------- outcome */
+
+.toh-case .toh-outcomes {
+  padding: clamp(3rem, 8vh, 6rem) 0;
+  background-color: var(--toh-panel);
+}
+
+.toh-case .toh-outcome {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 2rem;
+  padding: clamp(2rem, 4.5vh, 3.5rem) 0;
+  border-top: 1px solid var(--toh-line);
+}
+
+.toh-case .toh-outcome:last-child {
+  border-bottom: 1px solid var(--toh-line);
+}
+
+.toh-case .toh-outcome-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.toh-case .toh-outcome-title {
+  font-size: clamp(2rem, 5vw, 5.5rem);
+  transition: color 300ms ease;
+}
+
+.toh-case .toh-outcome:hover .toh-outcome-title {
+  color: var(--base-500);
+}
+
+.toh-case .toh-outcome-value p {
+  font-size: clamp(1.05rem, 1.5vw, 1.5rem);
+  line-height: 1.4;
+  color: var(--toh-dim);
+  padding-bottom: 0.5rem;
+}
+
+/* ------------------------------------------------------------- closing */
+
+.toh-case .toh-closing {
+  padding: clamp(4rem, 10vh, 8rem) 0 clamp(5rem, 12vh, 10rem);
+}
+
+.toh-case .toh-closing-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.toh-case .toh-closing-title {
+  font-size: clamp(2.5rem, 7vw, 8rem);
+  margin-bottom: 1rem;
+}
+
+/* ---------------------------------------------------------- responsive */
+
+@media (max-width: 1000px) {
+  .toh-case .toh-deck {
+    right: -30vw;
+    width: 95vw;
+    opacity: 0.55;
+  }
+
+  .toh-case .toh-hero-meta {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .toh-case .toh-body {
+    grid-template-columns: 1fr;
+  }
+
+  /* The tracklist becomes a chip row above the sides. */
+  .toh-case .toh-tracklist {
+    position: static;
+  }
+
+  .toh-case .toh-tracklist ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .toh-case .toh-tracklist li,
+  .toh-case .toh-tracklist li:last-child {
+    border: 1px solid var(--toh-line);
+    border-radius: 2rem;
+  }
+
+  .toh-case .toh-tracklist a {
+    padding: 0.5rem 0.9rem;
+  }
+
+  .toh-case .toh-frame {
+    flex-basis: clamp(13rem, 62vw, 18rem);
+  }
+
+  .toh-case .toh-outcome {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 1rem;
+  }
+
+  /* globals.css zeroes heading letter-spacing with !important below 1000px;
+     restore the proportional tracking for the display type. */
+  .toh-case .toh-display {
+    letter-spacing: -0.02em !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toh-case .toh-frame {
+    transform: none;
+    transition: none;
+  }
+}
