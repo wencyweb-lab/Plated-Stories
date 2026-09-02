@@ -1,0 +1,291 @@
+/* Bespoke case-study layout for /work/food-beverages/baked-by-ninis.
+   Scoped entirely under .bbn-case so it cannot reach any other project
+   page. Built on the existing tokens (--base-100/300/400/500), the
+   `.sm` mono eyebrow and the DM Sans display headline the homepage
+   "We are Plated Stories" h1 uses. */
+
+.bbn-case {
+  position: relative;
+  width: 100%;
+  background-color: var(--base-100);
+  color: var(--base-400);
+  overflow-x: hidden;
+}
+
+/* Display headline shared by every section label. Letter-spacing is set
+   in `em`, not `rem`, so it stays proportional at every size — the fixed
+   -0.125rem/-0.2rem from globals.css crowds words together the moment the
+   font-size drops, which is what jammed "Nini's" into "partnered". */
+.bbn-case .bbn-hero-title,
+.bbn-case .bbn-chapter-title,
+.bbn-case .bbn-outcome-title,
+.bbn-case .bbn-closing-title {
+  font-family: "DM Sans";
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.bbn-case .bbn-accent {
+  color: var(--base-500);
+}
+
+.bbn-case .bbn-eyebrow,
+.bbn-case .bbn-chapter-index {
+  color: var(--base-300);
+}
+
+/* ---------------------------------------------------------------- hero */
+
+.bbn-case .bbn-hero {
+  position: relative;
+  min-height: 92svh;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 4rem;
+}
+
+.bbn-case .bbn-hero-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bbn-case .bbn-hero-title {
+  font-size: clamp(3rem, 11vw, 13rem);
+  margin-bottom: 1rem;
+}
+
+.bbn-case .bbn-hero-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.bbn-case .bbn-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bbn-case .bbn-meta-value {
+  font-size: 1.15rem;
+  line-height: 1.35;
+  max-width: 22rem;
+}
+
+/* ---------------------------------------------------------------- reel */
+
+.bbn-case .bbn-reel {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background-color: var(--base-400);
+}
+
+.bbn-case .bbn-reel-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.bbn-case .bbn-reel video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.bbn-case .bbn-reel-controls {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.5rem);
+  transition: opacity 300ms ease, transform 300ms ease, visibility 300ms;
+}
+
+.bbn-case .bbn-reel:hover .bbn-reel-controls,
+.bbn-case .bbn-reel:focus-within .bbn-reel-controls {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.bbn-case .bbn-reel-btn {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 100%;
+  background-color: rgba(23, 20, 18, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--base-100);
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.bbn-case .bbn-reel-btn:hover {
+  background-color: rgba(23, 20, 18, 0.85);
+  transform: scale(1.08);
+}
+
+.bbn-case .bbn-reel-btn:active {
+  transform: scale(0.94);
+}
+
+/* ------------------------------------------------------------ chapters */
+
+.bbn-case .bbn-chapter {
+  padding: clamp(6rem, 12vh, 11rem) 0;
+}
+
+.bbn-case .bbn-chapter-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.bbn-case .bbn-chapter-title {
+  font-size: clamp(2.75rem, 8.5vw, 10rem);
+}
+
+/* The supporting sentence — light, muted and narrow enough to stay
+   readable. This is the half that used to be a wall of 900-weight
+   uppercase h3. */
+.bbn-case .bbn-chapter-copy {
+  max-width: 54rem;
+  margin-top: 1.25rem;
+  font-size: clamp(1.05rem, 1.35vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--base-300);
+  text-wrap: pretty;
+}
+
+.bbn-case .bbn-chapter--dark {
+  background-color: var(--base-400);
+  color: var(--base-100);
+}
+
+.bbn-case .bbn-chapter--dark .bbn-chapter-index {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.bbn-case .bbn-chapter--dark .bbn-chapter-copy {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ------------------------------------------------------------ outcomes */
+
+.bbn-case .bbn-outcomes {
+  padding-bottom: clamp(6rem, 12vh, 11rem);
+}
+
+.bbn-case .bbn-outcome {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 2rem;
+  padding: clamp(2.5rem, 5vh, 4rem) 0;
+  border-top: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.bbn-case .bbn-outcome:last-child {
+  border-bottom: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.bbn-case .bbn-outcome-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bbn-case .bbn-outcome-title {
+  font-size: clamp(2.25rem, 6vw, 6.5rem);
+  transition: color 300ms ease;
+}
+
+.bbn-case .bbn-outcome:hover .bbn-outcome-title {
+  color: var(--base-500);
+}
+
+.bbn-case .bbn-outcome-value p {
+  font-size: clamp(1.05rem, 1.5vw, 1.6rem);
+  line-height: 1.4;
+  color: var(--base-300);
+  padding-bottom: 0.5rem;
+}
+
+/* ------------------------------------------------------------- closing */
+
+.bbn-case .bbn-closing {
+  padding: clamp(5rem, 10vh, 9rem) 0 clamp(6rem, 12vh, 10rem);
+  background-color: var(--base-100);
+}
+
+.bbn-case .bbn-closing-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.bbn-case .bbn-closing-title {
+  font-size: clamp(2.5rem, 7vw, 8rem);
+  margin-bottom: 1rem;
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 1000px) {
+  .bbn-case .bbn-hero {
+    min-height: 88svh;
+    padding-bottom: 2.5rem;
+  }
+
+  .bbn-case .bbn-hero-meta {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+
+  .bbn-case .bbn-reel {
+    height: 70svh;
+  }
+
+  .bbn-case .bbn-reel-controls {
+    bottom: 1.25rem;
+    right: 1.25rem;
+  }
+
+  .bbn-case .bbn-outcome {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 1rem;
+  }
+
+  /* globals.css zeroes heading letter-spacing with !important below
+     1000px; restore the proportional tracking for the display type. */
+  .bbn-case .bbn-hero-title,
+  .bbn-case .bbn-chapter-title,
+  .bbn-case .bbn-outcome-title,
+  .bbn-case .bbn-closing-title {
+    letter-spacing: -0.02em !important;
+  }
+}

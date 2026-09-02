@@ -1,0 +1,322 @@
+/* Bespoke case-study layout for /work/food-beverages/cafe-srinivasa.
+   Everything below the hero is scoped under .cs-case so it cannot reach
+   another project page. The header + banner above it still come from
+   ProjectPage.css (imported by the component) and are untouched.
+   Built on the existing tokens (--base-100/300/400/500), the `.sm` mono
+   eyebrow and the DM Sans display headline. */
+
+.cs-case {
+  position: relative;
+  width: 100%;
+  background-color: var(--base-100);
+  color: var(--base-400);
+  overflow-x: hidden;
+}
+
+/* Display headline shared by every section label. Letter-spacing is set in
+   `em`, not `rem`, so tracking stays proportional at every size — the fixed
+   values in globals.css crowd words together as the font-size drops. */
+.cs-case .cs-display {
+  font-family: "DM Sans";
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.cs-case .cs-accent {
+  color: var(--base-500);
+}
+
+.cs-case .cs-index {
+  color: var(--base-300);
+}
+
+/* globals.css only styles `.sm` on p/a, so the series-index numbers — spans
+   inside the row link — were falling back to the body font. Same mono
+   treatment, scoped to this page. */
+.cs-case span.sm {
+  font-family: "Geist Mono";
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.1rem;
+}
+
+.cs-case .cs-copy {
+  font-size: clamp(1.05rem, 1.35vw, 1.4rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--base-300);
+  text-wrap: pretty;
+}
+
+/* ----------------------------------------------------------------- brief */
+
+.cs-case .cs-brief {
+  padding: clamp(5rem, 11vh, 9rem) 0 clamp(3rem, 7vh, 6rem);
+}
+
+.cs-case .cs-brief-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.cs-case .cs-brief-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 8rem;
+}
+
+.cs-case .cs-brief-title {
+  font-size: clamp(2.5rem, 5.5vw, 5.5rem);
+}
+
+.cs-case .cs-brief-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 4vh, 3.5rem);
+  padding-top: 0.5rem;
+}
+
+.cs-case .cs-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.cs-case .cs-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cs-case .cs-meta-value {
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+/* ---------------------------------------------------------- series index */
+
+.cs-case .cs-toc {
+  padding: clamp(3rem, 7vh, 6rem) 0 clamp(2rem, 5vh, 4rem);
+}
+
+.cs-case .cs-toc-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.cs-case .cs-toc-item {
+  border-top: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.cs-case .cs-toc-item:last-child {
+  border-bottom: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.cs-case .cs-toc-item a {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: clamp(1rem, 2.5vh, 1.75rem) 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cs-case .cs-toc-name {
+  font-size: clamp(1.75rem, 4.5vw, 4rem);
+  transition: color 300ms ease, transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cs-case .cs-toc-item a:hover .cs-toc-name {
+  color: var(--base-500);
+  transform: translateX(0.75rem);
+}
+
+/* --------------------------------------------------------------- series */
+
+.cs-case .cs-series {
+  padding: clamp(3.5rem, 8vh, 7rem) 0;
+}
+
+/* Alternate the ground so the series read as separate chapters rather than
+   one long scroll of galleries. */
+.cs-case .cs-series:nth-child(even) {
+  background-color: var(--base-400);
+  color: var(--base-100);
+}
+
+.cs-case .cs-series:nth-child(even) .cs-index,
+.cs-case .cs-series:nth-child(even) .cs-copy {
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.cs-case .cs-series-inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 4vh, 3rem);
+}
+
+.cs-case .cs-series-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cs-case .cs-series-title {
+  font-size: clamp(2.25rem, 3.6vw, 4rem);
+}
+
+.cs-case .cs-series-head .cs-copy {
+  margin-top: 0.5rem;
+  max-width: 46rem;
+}
+
+/* Multi-column rather than grid: the exports arrive at mixed aspect ratios,
+   and columns tile them at their natural shape with no cropping and no ragged
+   row gaps. Three across keeps each frame at a scale that reads as a set
+   instead of eating a screen each. */
+.cs-case .cs-gallery {
+  column-count: 3;
+  column-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.cs-case .cs-frame {
+  break-inside: avoid;
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+  overflow: hidden;
+  background-color: rgba(26, 22, 20, 0.06);
+}
+
+.cs-case .cs-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cs-case .cs-frame:hover img {
+  transform: scale(1.04);
+}
+
+/* -------------------------------------------------------------- outcome */
+
+.cs-case .cs-outcomes {
+  padding: clamp(4rem, 10vh, 8rem) 0;
+}
+
+.cs-case .cs-outcome {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 2rem;
+  padding: clamp(2rem, 4.5vh, 3.5rem) 0;
+  border-top: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.cs-case .cs-outcomes > .container > .cs-outcome:first-of-type {
+  margin-top: 1.5rem;
+}
+
+.cs-case .cs-outcome:last-child {
+  border-bottom: 1px solid rgba(26, 22, 20, 0.14);
+}
+
+.cs-case .cs-outcome-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cs-case .cs-outcome-title {
+  font-size: clamp(2rem, 5vw, 5.5rem);
+  transition: color 300ms ease;
+}
+
+.cs-case .cs-outcome:hover .cs-outcome-title {
+  color: var(--base-500);
+}
+
+.cs-case .cs-outcome-value p {
+  font-size: clamp(1.05rem, 1.5vw, 1.5rem);
+  line-height: 1.4;
+  color: var(--base-300);
+  padding-bottom: 0.5rem;
+}
+
+/* -------------------------------------------------------------- closing */
+
+.cs-case .cs-closing {
+  padding: clamp(4rem, 9vh, 8rem) 0 clamp(5rem, 12vh, 10rem);
+}
+
+.cs-case .cs-closing-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.cs-case .cs-closing-title {
+  font-size: clamp(2.5rem, 7vw, 8rem);
+  margin-bottom: 1rem;
+}
+
+/* ----------------------------------------------------------- responsive */
+
+@media (max-width: 1000px) {
+  .cs-case .cs-brief-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .cs-case .cs-brief-lead {
+    position: static;
+  }
+
+  .cs-case .cs-series-head .cs-copy {
+    max-width: none;
+  }
+
+  .cs-case .cs-meta {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .cs-case .cs-gallery {
+    column-count: 2;
+  }
+
+  .cs-case span.sm {
+    font-size: 0.8rem;
+    letter-spacing: 0.05rem;
+  }
+
+  .cs-case .cs-outcome {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 1rem;
+  }
+
+  /* globals.css zeroes heading letter-spacing with !important below 1000px;
+     restore the proportional tracking for the display type. */
+  .cs-case .cs-display {
+    letter-spacing: -0.02em !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .cs-case .cs-gallery {
+    column-count: 1;
+  }
+}

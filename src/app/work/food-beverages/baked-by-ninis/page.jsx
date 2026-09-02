@@ -1,17 +1,23 @@
-import ProjectPage from "@/components/ProjectPage/ProjectPage";
+import BakedByNinis from "./BakedByNinis";
 import { workCategories } from "@/app/work/workCategories.js";
 
-const project = workCategories
-  .find((c) => c.key === "food-beverages")
-  .projects.find((p) => p.slug === "baked-by-ninis");
+// This project has diverged from the shared ProjectPage template and owns
+// its own layout (BakedByNinis.jsx + baked-by-ninis.css) — nothing here is
+// shared, so the other project pages are unaffected by changes to it.
+const category = workCategories.find((c) => c.key === "food-beverages");
+const projectIndex = category.projects.findIndex(
+  (p) => p.slug === "baked-by-ninis"
+);
+const project = category.projects[projectIndex];
+const next = category.projects[projectIndex + 1] ?? null;
 
 export const metadata = { title: `${project.name} — Plated Stories` };
 
 const Page = () => (
-  <ProjectPage
+  <BakedByNinis
     name={project.name}
-    images={project.images}
     heroVideo={project.heroVideo}
+    next={next}
   />
 );
 
