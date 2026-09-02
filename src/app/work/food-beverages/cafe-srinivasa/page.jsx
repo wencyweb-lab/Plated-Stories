@@ -15,7 +15,7 @@ const next = category.projects[projectIndex + 1] ?? null;
 export const metadata = { title: `${project.name} — Plated Stories` };
 
 const Page = () => (
-  <CafeSrinivasa name={project.name} images={project.images} next={next} />
+  <CafeSrinivasa name={project.name} next={next} />
 );
 
 export default Page;

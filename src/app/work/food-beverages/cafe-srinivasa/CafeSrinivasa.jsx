@@ -1,7 +1,7 @@
 "use client";
 import "@/components/ProjectPage/ProjectPage.css";
 import "./cafe-srinivasa.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuVolumeX, LuVolume, LuPlay, LuPause } from "react-icons/lu";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,6 +9,8 @@ import { useGSAP } from "@gsap/react";
 import Footer from "@/components/Footer/Footer";
 import Copy from "@/components/Copy/Copy";
 import Button from "@/components/Button/Button";
+import CsShowreel from "./CsShowreel";
+import { isVideo } from "./media";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -33,11 +35,18 @@ const META = [
 // entirely, so filling one in later is a one-line change here.
 const SERIES = [
   {
-    name: "Bissi Belle Bath",
-    copy: `The house classic, shot at the moment it leaves the kitchen ${EM} steam, ghee and the deep spice colour that makes the dish read instantly on a feed.`,
+    name: "Classics",
+    // The dishes the cafe is known for — stills and reels on a strip.
+    marquee: true,
+    copy: `The dishes people come back for ${EM} bisi bele bath, benne dosa, idli, dal vada and the full thali, each shot at the moment it leaves the kitchen.`,
     media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/1_1.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/2_1.png",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378603/6._Cult_Favourite.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378600/7._Idli_Making.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378596/2._Dal_Vada.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378572/10._Thali.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378571/8._Benne_Dosa.mp4",
     ],
   },
   {
@@ -95,15 +104,9 @@ const SERIES = [
     ],
   },
   {
-    name: "Texture",
-    copy: `Detail frames for the grid ${EM} crumb, pour and surface at a distance no diner sees, cut in to break up the wider plate shots.`,
-    media: [
-      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788377334/cvbnm.png",
-      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788377335/dxcfgvhb.png",
-    ],
-  },
-  {
     name: "You & Me",
+    // All four on one line.
+    columns: 4,
     copy: `Food as an occasion rather than a product ${EM} two orders, one table, shot the way the cafe is actually used.`,
     media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376789/123wef.png",
@@ -113,6 +116,9 @@ const SERIES = [
     ],
   },
 ];
+
+// Every frame in the case study, in series order — what the showreel cycles.
+const ALL_MEDIA = SERIES.flatMap((item) => item.media);
 
 const OUTCOMES = [
   { title: "Deliverables", value: "Content Strategy, Reels & Carousels" },
@@ -130,15 +136,37 @@ const slugify = (name) =>
 
 const pad = (n) => String(n).padStart(2, "0");
 
-const isVideo = (src) => /\.(mp4|webm|mov)$/i.test(src);
-
 // A single gallery tile. Stills are plain images; a reel autoplays muted
 // (the only way browsers allow it) and carries the same play/mute cluster
 // the hero banner uses, revealed on hover or focus.
 const Frame = ({ src, label, className = "", hidden = false }) => {
   const videoRef = useRef(null);
+  const userPausedRef = useRef(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
+
+  // The page carries a lot of reels, and the marquee clones its track, so
+  // several sections' worth of video would otherwise decode at once. Only
+  // what is actually on screen plays; a deliberate pause is remembered so
+  // scrolling past and back does not restart it.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!userPausedRef.current) video.play().catch(() => {});
+        } else if (!video.paused) {
+          video.pause();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
 
   if (!isVideo(src)) {
     return (
@@ -158,8 +186,13 @@ const Frame = ({ src, label, className = "", hidden = false }) => {
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
-    if (video.paused) video.play().catch(() => {});
-    else video.pause();
+    if (video.paused) {
+      userPausedRef.current = false;
+      video.play().catch(() => {});
+    } else {
+      userPausedRef.current = true;
+      video.pause();
+    }
   };
 
   return (
@@ -204,7 +237,7 @@ const Frame = ({ src, label, className = "", hidden = false }) => {
   );
 };
 
-const CafeSrinivasa = ({ name, images = [], next }) => {
+const CafeSrinivasa = ({ name, next }) => {
   const galleryScope = useRef(null);
 
   const series = SERIES.filter((item) => item.media.length > 0);
@@ -239,11 +272,10 @@ const CafeSrinivasa = ({ name, images = [], next }) => {
         </Copy>
       </section>
 
-      <section className="project-banner-img">
-        <div className="project-banner-img-wrapper">
-          <img src={images[0]} alt={name} />
-        </div>
-      </section>
+      {/* The homepage Showreel frame — same pin, scale and radius — running
+          this project's own stills and reels instead of the /showreel
+          sequence. */}
+      <CsShowreel media={ALL_MEDIA} label={name} />
 
       {/* --------------------------------------------------------- brief */}
       <section className="cs-brief">
