@@ -1,7 +1,8 @@
 "use client";
 import "@/components/ProjectPage/ProjectPage.css";
 import "./cafe-srinivasa.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { LuVolumeX, LuVolume, LuPlay, LuPause } from "react-icons/lu";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -26,22 +27,25 @@ const META = [
 
 // The shoot is organised as named series, mirroring the folders in the
 // project's Drive. Each entry renders its own section: the title and copy
-// first, then the gallery underneath at reading width;
-// a series with no `images` yet is skipped entirely, so filling one in later
-// is a one-line change here and nothing else.
+// first, then the gallery underneath at reading width. `media` takes stills
+// and reels alike — anything ending .mp4 renders as a muted autoplaying
+// video with its own controls. A series with no media yet is skipped
+// entirely, so filling one in later is a one-line change here.
 const SERIES = [
   {
     name: "Bissi Belle Bath",
     copy: `The house classic, shot at the moment it leaves the kitchen ${EM} steam, ghee and the deep spice colour that makes the dish read instantly on a feed.`,
-    images: [
+    media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/1_1.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/2_1.png",
     ],
   },
   {
     name: "Icecreams",
+    // All five in a single line rather than wrapping across three columns.
+    columns: 5,
     copy: `A cold counterpoint to the kitchen${RSQUO}s heat. Scoops, melt and colour blocking, built as a set that holds together across a grid rather than as five single posts.`,
-    images: [
+    media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/3.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/4.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/2.png",
@@ -51,33 +55,57 @@ const SERIES = [
   },
   {
     name: "Mulbagal",
+    // Runs as an auto-scrolling strip instead of a static grid.
+    marquee: true,
     copy: `The dosa the town gave its name to, treated as the hero it is ${EM} crisp edge, soft centre and the chutney set staged the way it actually arrives at the table.`,
-    images: [
+    media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/as.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/er.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/2d.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/ws.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375826/we.png",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788377446/1._Mulbagal_Dosa.mp4",
     ],
   },
   {
     name: "Pairings",
+    // Five stills and two reels, running as a strip like Mulbagal.
+    marquee: true,
     copy: `What goes with what ${EM} plate and cup framed together so the menu sells the combination, not just the dish.`,
-    images: [
+    media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376299/gfhgjk.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376298/rsedfh.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376298/yugy.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376298/ghjk.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376298/gfcvhjbk.png",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378083/4._Breakfast.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378092/5._ASMR.mp4",
     ],
   },
-  // Awaiting media — each section appears the moment its links land.
-  { name: "Tadgola", copy: "", images: [] },
-  { name: "Texture", copy: "", images: [] },
+  {
+    name: "Tadgola",
+    // Three stills and the reel, all four on one line.
+    columns: 4,
+    copy: `The season${RSQUO}s ice apple, shot cold and close ${EM} translucence, water and the short window the fruit is actually on the menu.`,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788377181/rtey.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788377184/dfbnlk.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788377187/dshbk.png",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788377897/3._Tadgola_Ice_Cream.mp4",
+    ],
+  },
+  {
+    name: "Texture",
+    copy: `Detail frames for the grid ${EM} crumb, pour and surface at a distance no diner sees, cut in to break up the wider plate shots.`,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788377334/cvbnm.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788377335/dxcfgvhb.png",
+    ],
+  },
   {
     name: "You & Me",
     copy: `Food as an occasion rather than a product ${EM} two orders, one table, shot the way the cafe is actually used.`,
-    images: [
+    media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376789/123wef.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376790/ererter.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788376790/r3e.png",
@@ -102,15 +130,89 @@ const slugify = (name) =>
 
 const pad = (n) => String(n).padStart(2, "0");
 
+const isVideo = (src) => /\.(mp4|webm|mov)$/i.test(src);
+
+// A single gallery tile. Stills are plain images; a reel autoplays muted
+// (the only way browsers allow it) and carries the same play/mute cluster
+// the hero banner uses, revealed on hover or focus.
+const Frame = ({ src, label, className = "", hidden = false }) => {
+  const videoRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  if (!isVideo(src)) {
+    return (
+      <div className={`cs-frame ${className}`.trim()} aria-hidden={hidden}>
+        <img src={src} alt={hidden ? "" : label} loading="lazy" />
+      </div>
+    );
+  }
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    if (!video.muted) video.volume = 1;
+  };
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) video.play().catch(() => {});
+    else video.pause();
+  };
+
+  return (
+    <div
+      className={`cs-frame cs-frame--video ${className}`.trim()}
+      tabIndex={hidden ? -1 : 0}
+      aria-hidden={hidden}
+    >
+      <video
+        ref={videoRef}
+        src={src}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-label={label}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onVolumeChange={(e) => setIsMuted(e.currentTarget.muted)}
+      />
+
+      <div className="cs-frame-controls">
+        <button
+          type="button"
+          className="cs-frame-btn"
+          onClick={togglePlay}
+          aria-label={isPlaying ? "Pause video" : "Play video"}
+        >
+          {isPlaying ? <LuPause size={16} /> : <LuPlay size={16} />}
+        </button>
+        <button
+          type="button"
+          className="cs-frame-btn"
+          onClick={toggleMute}
+          aria-label={isMuted ? "Unmute video" : "Mute video"}
+        >
+          {isMuted ? <LuVolumeX size={16} /> : <LuVolume size={16} />}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const CafeSrinivasa = ({ name, images = [], next }) => {
   const galleryScope = useRef(null);
 
-  const series = SERIES.filter((item) => item.images.length > 0);
+  const series = SERIES.filter((item) => item.media.length > 0);
 
   // Stagger each gallery frame in as it crosses the fold.
   useGSAP(
     () => {
-      gsap.utils.toArray(".cs-frame").forEach((frame) => {
+      gsap.utils.toArray(".cs-gallery > .cs-frame").forEach((frame) => {
         gsap.fromTo(
           frame,
           { y: 60, opacity: 0 },
@@ -227,17 +329,44 @@ const CafeSrinivasa = ({ name, images = [], next }) => {
                 ) : null}
               </div>
 
-              <div className="cs-gallery">
-                {item.images.map((src, j) => (
-                  <div className="cs-frame" key={src}>
-                    <img
-                      src={src}
-                      alt={`${item.name} ${j + 1}`}
-                      loading="lazy"
-                    />
+              {item.marquee ? (
+                // The track holds the set twice over and slides exactly one
+                // set's width before looping, so the seam never shows. CSS
+                // owns the motion — see .cs-marquee in the stylesheet — which
+                // keeps the pause-on-hover a single declaration rather than a
+                // scroll listener.
+                <div
+                  className="cs-marquee"
+                  style={{
+                    "--marquee-duration": `${item.media.length * 7}s`,
+                  }}
+                >
+                  <div className="cs-marquee-track">
+                    {[...item.media, ...item.media].map((src, j) => (
+                      <Frame
+                        key={`${src}-${j}`}
+                        src={src}
+                        label={`${item.name} ${(j % item.media.length) + 1}`}
+                        className="cs-marquee-item"
+                        hidden={j >= item.media.length}
+                      />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              ) : (
+                <div
+                  className="cs-gallery"
+                  style={{ "--cols": item.columns ?? 3 }}
+                >
+                  {item.media.map((src, j) => (
+                    <Frame
+                      key={src}
+                      src={src}
+                      label={`${item.name} ${j + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </section>
         ))}

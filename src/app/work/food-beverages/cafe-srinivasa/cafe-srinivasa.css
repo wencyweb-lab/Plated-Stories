@@ -186,27 +186,171 @@
    and columns tile them at their natural shape with no cropping and no ragged
    row gaps. Three across keeps each frame at a scale that reads as a set
    instead of eating a screen each. */
+/* --cols is set per series in the component (default 3); a series can ask
+   for its whole set on one line by naming its own count. */
 .cs-case .cs-gallery {
-  column-count: 3;
+  column-count: var(--cols, 3);
   column-gap: clamp(0.75rem, 1.5vw, 1.25rem);
 }
 
 .cs-case .cs-frame {
+  position: relative;
   break-inside: avoid;
   margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
   overflow: hidden;
   background-color: rgba(26, 22, 20, 0.06);
 }
 
-.cs-case .cs-frame img {
+/* Every still in this project exports at 3375x4219 (4:5), so the tile locks
+   to that ratio and a vertical reel is centre-cropped into the same frame
+   rather than running twice as tall as the stills beside it. */
+.cs-case .cs-frame img,
+.cs-case .cs-frame video {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center;
   transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .cs-case .cs-frame:hover img {
   transform: scale(1.04);
+}
+
+/* A reel sits in the same column flow as the stills — no zoom on hover,
+   since the frame carries controls instead. */
+.cs-case .cs-frame--video {
+  aspect-ratio: 4 / 5;
+  background-color: rgba(23, 20, 18, 0.9);
+}
+
+.cs-case .cs-frame--video:focus-visible {
+  outline: 2px solid var(--base-500);
+  outline-offset: 2px;
+}
+
+.cs-case .cs-frame-controls {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.4rem);
+  transition: opacity 300ms ease, transform 300ms ease, visibility 300ms;
+}
+
+.cs-case .cs-frame--video:hover .cs-frame-controls,
+.cs-case .cs-frame--video:focus-within .cs-frame-controls {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.cs-case .cs-frame-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 100%;
+  background-color: rgba(23, 20, 18, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--base-100);
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.cs-case .cs-frame-btn:hover {
+  background-color: rgba(23, 20, 18, 0.85);
+  transform: scale(1.08);
+}
+
+.cs-case .cs-frame-btn:active {
+  transform: scale(0.94);
+}
+
+/* Touch has no hover: keep the controls visible there. */
+@media (hover: none) {
+  .cs-case .cs-frame-controls {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------- marquee */
+
+/* A series can run as an endless single-line strip instead of a grid.
+   Four tiles are visible at a time; the track carries the set twice and
+   travels exactly one set's width, so the loop is seamless. Sizing is in
+   `cqw` against the strip itself — a percentage width inside a
+   content-sized flex track would resolve circularly. */
+.cs-case .cs-marquee {
+  --marquee-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  /* Fades the strip out into the section ground at both ends. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 9%,
+    #000 91%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 9%,
+    #000 91%,
+    transparent 100%
+  );
+}
+
+.cs-case .cs-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: var(--marquee-gap);
+  animation: cs-marquee-scroll var(--marquee-duration, 30s) linear infinite;
+}
+
+.cs-case .cs-marquee .cs-frame {
+  flex: 0 0 calc((100cqw - 3 * var(--marquee-gap)) / 4);
+  margin-bottom: 0;
+}
+
+/* Hovering any tile stops the strip — including the reel, so its controls
+   stay under the cursor. Focus does the same for keyboard users. */
+.cs-case .cs-marquee-track:has(.cs-frame:hover),
+.cs-case .cs-marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
+@keyframes cs-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    /* One full set = half the track plus half a gap. */
+    transform: translate3d(calc(-50% - var(--marquee-gap) / 2), 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-case .cs-marquee-track {
+    animation: none;
+  }
+
+  .cs-case .cs-marquee {
+    overflow-x: auto;
+  }
 }
 
 /* -------------------------------------------------------------- outcome */
@@ -295,6 +439,10 @@
 
   .cs-case .cs-gallery {
     column-count: 2;
+  }
+
+  .cs-case .cs-marquee .cs-frame {
+    flex-basis: calc((100cqw - var(--marquee-gap)) / 2);
   }
 
   .cs-case span.sm {
