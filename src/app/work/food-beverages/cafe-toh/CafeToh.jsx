@@ -26,15 +26,14 @@ const META = [
   { label: "Services", value: "Strategy, Production, Editing" },
 ];
 
-// Cafe Toh is a record cafe, so the page is built as a record: four sides,
-// each with its own crate of frames you drag through. `side` is the label on
-// the rail; a section with no media yet is skipped, so filling one in later
-// is a one-line change here and nothing else.
-const SIDES = [
+// Four parts, each with its own rack of frames you drag through. A part
+// with no media yet is skipped, so filling one in later is a one-line
+// change here and nothing else.
+const SECTIONS = [
   {
-    side: "A1",
+    number: "01",
     name: "Art vs Artist",
-    copy: `The room and the people who make it ${EM} work on the walls set against the hands that plate, pour and pick the next record.`,
+    copy: `The room and the people who make it ${EM} work on the walls set against the hands that plate, pour and serve.`,
     media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380469/vewcbj.png",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380469/hebdcks.png",
@@ -42,26 +41,39 @@ const SIDES = [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380468/wiuer.png",
     ],
   },
-  // Awaiting media — each side appears the moment its links land.
   {
-    side: "A2",
+    number: "02",
     name: "Dishes That Keep Calling Back",
     copy: `The orders regulars don${RSQUO}t need the menu for, shot to earn the second visit.`,
-    media: [],
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/cghbjh.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/xfgcfhgh.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381158/fgchvbh.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381158/srdgfh.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381158/tcfvghbj.png",
+    ],
   },
+  // Awaiting media — each part appears the moment its links land.
   {
-    side: "B1",
+    number: "03",
     name: "Textures",
     copy: `Close enough to feel it ${EM} crumb, foam, grain and glaze at a distance no diner gets.`,
     media: [],
   },
   {
-    side: "B2",
+    number: "04",
     name: "Vinyls",
-    copy: `The other half of the room. Sleeves, spindles and the soundtrack the cafe is named for.`,
+    copy: `The other half of the room, and the reason people stay for a second cup.`,
     media: [],
   },
 ];
+
+// The opening frames, borrowed for the hero strip. One per section first,
+// so the strip previews the whole study rather than just its first part.
+const HERO_FRAMES = [
+  ...SECTIONS.flatMap((item) => item.media.slice(0, 1)),
+  ...SECTIONS.flatMap((item) => item.media.slice(1)),
+].slice(0, 5);
 
 const OUTCOMES = [
   { title: "Deliverables", value: "Content Strategy, Reels & Carousels" },
@@ -77,7 +89,7 @@ const slugify = (name) =>
     .trim()
     .replace(/\s+/g, "-");
 
-// A single frame in a crate. Reels loop muted here; sound lives in the
+// A single frame in a rack. Reels loop muted here; sound lives in the
 // lightbox, where the visitor has actually asked for the thing.
 const Frame = ({ src, label, onOpen }) => (
   <button type="button" className="toh-frame" onClick={onOpen}>
@@ -90,11 +102,10 @@ const Frame = ({ src, label, onOpen }) => (
   </button>
 );
 
-// The crate: a horizontal rack you drag, throw or arrow through. Tiles sit
-// at a slight tilt like records leaning in a box and straighten as they come
-// under the cursor. Native overflow does the scrolling, so trackpads, wheels
-// and touch all work without being re-implemented.
-const Crate = ({ items, name, onOpen }) => {
+// A horizontal rack you drag, throw or arrow through. Native overflow does
+// the scrolling, so trackpads, wheels and touch all keep working; the
+// pointer handlers only add drag on top of it.
+const Rack = ({ items, name, onOpen }) => {
   const railRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const drag = useRef({ active: false, startX: 0, startLeft: 0, moved: 0 });
@@ -150,7 +161,7 @@ const Crate = ({ items, name, onOpen }) => {
   };
 
   return (
-    <div className="toh-crate">
+    <div className="toh-rack">
       <div
         className="toh-rail"
         ref={railRef}
@@ -174,12 +185,12 @@ const Crate = ({ items, name, onOpen }) => {
         ))}
       </div>
 
-      <div className="toh-crate-foot">
+      <div className="toh-rack-foot">
         <div className="toh-scrub" aria-hidden="true">
           <span style={{ transform: `scaleX(${Math.max(progress, 0.06)})` }} />
         </div>
 
-        <div className="toh-crate-controls">
+        <div className="toh-controls">
           <p className="sm toh-hint">Drag</p>
           <button
             type="button"
@@ -247,7 +258,7 @@ const Lightbox = ({ open, items, index, name, onClose, onStep }) => {
           "0"
         )} of ${String(items.length).padStart(2, "0")}`}</p>
 
-        <div className="toh-crate-controls">
+        <div className="toh-controls">
           <button
             type="button"
             className="toh-round"
@@ -280,26 +291,26 @@ const Lightbox = ({ open, items, index, name, onClose, onStep }) => {
 
 const CafeToh = ({ name, next }) => {
   const pageRef = useRef(null);
-  const vinylRef = useRef(null);
+  const heroRef = useRef(null);
   const [active, setActive] = useState(0);
-  const [viewer, setViewer] = useState({ open: false, side: 0, index: 0 });
+  const [viewer, setViewer] = useState({ open: false, section: 0, index: 0 });
 
-  const sides = SIDES.filter((item) => item.media.length > 0);
+  const sections = SECTIONS.filter((item) => item.media.length > 0);
 
-  const openViewer = (sideIndex, index) =>
-    setViewer({ open: true, side: sideIndex, index });
+  const openViewer = (sectionIndex, index) =>
+    setViewer({ open: true, section: sectionIndex, index });
 
   const stepViewer = useCallback(
     (direction) => {
       setViewer((current) => {
-        const items = sides[current.side]?.media ?? [];
+        const items = sections[current.section]?.media ?? [];
         if (!items.length) return current;
         const nextIndex =
           (current.index + direction + items.length) % items.length;
         return { ...current, index: nextIndex };
       });
     },
-    [sides]
+    [sections]
   );
 
   const closeViewer = useCallback(
@@ -307,56 +318,73 @@ const CafeToh = ({ name, next }) => {
     []
   );
 
+  // The hero strip: tiles rise on load, drift as the hero scrolls away, and
+  // lean a little towards the cursor so the row has some give to it.
   useGSAP(
     () => {
-      // The record turns on its own and picks up speed while the hero is
-      // under the cursor; scrolling spins it too, so the page reads as one
-      // continuous rotation.
-      if (vinylRef.current) {
-        const spin = gsap.to(vinylRef.current, {
-          rotation: 360,
-          duration: 12,
-          ease: "none",
-          repeat: -1,
+      const hero = heroRef.current;
+      const tiles = gsap.utils.toArray(".toh-hero-strip .toh-tile");
+      if (!hero || !tiles.length) return;
+
+      gsap.from(tiles, {
+        y: 60,
+        opacity: 0,
+        duration: 1.1,
+        stagger: 0.07,
+        delay: 0.45,
+        ease: "power3.out",
+      });
+
+      gsap.to(tiles, {
+        yPercent: (i) => -6 - i * 2,
+        ease: "none",
+        scrollTrigger: {
+          trigger: hero,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
+      const setters = tiles.map((tile, i) => ({
+        x: gsap.quickTo(tile, "x", { duration: 0.9, ease: "power3.out" }),
+        y: gsap.quickTo(tile, "y", { duration: 0.9, ease: "power3.out" }),
+        depth: 6 + (i % 3) * 5,
+      }));
+
+      const onMove = (e) => {
+        const rect = hero.getBoundingClientRect();
+        const dx = (e.clientX - rect.left) / rect.width - 0.5;
+        const dy = (e.clientY - rect.top) / rect.height - 0.5;
+
+        setters.forEach((setter) => {
+          setter.x(dx * setter.depth);
+          setter.y(dy * setter.depth);
+        });
+      };
+
+      const onLeave = () =>
+        setters.forEach((setter) => {
+          setter.x(0);
+          setter.y(0);
         });
 
-        gsap.to(vinylRef.current, {
-          rotation: "+=540",
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".toh-hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
+      hero.addEventListener("pointermove", onMove);
+      hero.addEventListener("pointerleave", onLeave);
 
-        const hero = document.querySelector(".toh-hero");
-        const speedUp = () => gsap.to(spin, { timeScale: 3, duration: 0.6 });
-        const slowDown = () => gsap.to(spin, { timeScale: 1, duration: 0.9 });
+      return () => {
+        hero.removeEventListener("pointermove", onMove);
+        hero.removeEventListener("pointerleave", onLeave);
+      };
+    },
+    { scope: pageRef }
+  );
 
-        hero?.addEventListener("pointerenter", speedUp);
-        hero?.addEventListener("pointerleave", slowDown);
-
-        // The tonearm drops onto the record as the hero leaves.
-        gsap.fromTo(
-          ".toh-arm",
-          { rotate: -22 },
-          {
-            rotate: 4,
-            ease: "none",
-            scrollTrigger: {
-              trigger: ".toh-hero",
-              start: "top top",
-              end: "bottom top",
-              scrub: 1,
-            },
-          }
-        );
-      }
-
-      // Each side lights its own row on the tracklist as it takes the screen.
-      gsap.utils.toArray(".toh-side").forEach((section, i) => {
+  useGSAP(
+    () => {
+      // Each part lights its own row on the contents rail as it takes the
+      // screen.
+      gsap.utils.toArray(".toh-section").forEach((section, i) => {
         ScrollTrigger.create({
           trigger: section,
           start: "top 55%",
@@ -367,23 +395,23 @@ const CafeToh = ({ name, next }) => {
         });
       });
 
-      // Frames rise as their crate arrives.
-      gsap.utils.toArray(".toh-crate").forEach((crate) => {
+      // Frames rise as their rack arrives.
+      gsap.utils.toArray(".toh-rack").forEach((rack) => {
         gsap.fromTo(
-          crate.querySelectorAll(".toh-frame"),
-          { y: 70, opacity: 0, rotate: 0 },
+          rack.querySelectorAll(".toh-frame"),
+          { y: 70, opacity: 0 },
           {
             y: 0,
             opacity: 1,
             duration: 1,
             stagger: 0.08,
             ease: "power3.out",
-            scrollTrigger: { trigger: crate, start: "top 85%", once: true },
+            scrollTrigger: { trigger: rack, start: "top 85%", once: true },
           }
         );
       });
     },
-    { scope: pageRef, dependencies: [sides.length] }
+    { scope: pageRef, dependencies: [sections.length] }
   );
 
   const words = name.trim().split(" ");
@@ -393,28 +421,35 @@ const CafeToh = ({ name, next }) => {
   return (
     <div className="toh-case" ref={pageRef}>
       {/* ---------------------------------------------------------- hero */}
-      <section className="toh-hero">
-        <div className="toh-deck" aria-hidden="true">
-          <div className="toh-vinyl" ref={vinylRef}>
-            <div className="toh-vinyl-label">
-              <span className="sm">Side A</span>
-              <span className="sm">33⅓</span>
-            </div>
-          </div>
-          <div className="toh-arm" />
-        </div>
-
+      <section className="toh-hero" ref={heroRef}>
         <div className="container toh-hero-inner">
-          <Copy delay={0.5}>
-            <p className="sm toh-eyebrow">Featured Case Study</p>
-          </Copy>
+          <div className="toh-hero-lead">
+            <Copy delay={0.5}>
+              <p className="sm toh-eyebrow">Featured Case Study</p>
+            </Copy>
 
-          <Copy delay={0.6}>
-            <h1 className="toh-display toh-hero-title">
-              {lead ? `${lead} ` : ""}
-              <span className="toh-accent">{tail}</span>
-            </h1>
-          </Copy>
+            <Copy delay={0.6}>
+              <h1 className="toh-display toh-hero-title">
+                {lead ? `${lead} ` : ""}
+                <span className="toh-accent">{tail}</span>
+              </h1>
+            </Copy>
+          </div>
+
+          {/* The same tile the racks below are built from, laid out as an
+              opening strip: one frame per part, so the hero previews the
+              whole study. */}
+          <div className="toh-hero-strip" aria-hidden="true">
+            {HERO_FRAMES.map((src, i) => (
+              <div className={`toh-tile toh-hero-tile--${i + 1}`} key={src}>
+                {isVideo(src) ? (
+                  <video src={src} autoPlay muted loop playsInline />
+                ) : (
+                  <img src={src} alt="" />
+                )}
+              </div>
+            ))}
+          </div>
 
           <div className="toh-hero-meta">
             {META.map((item) => (
@@ -434,56 +469,98 @@ const CafeToh = ({ name, next }) => {
       {/* --------------------------------------------------------- brief */}
       <section className="toh-brief">
         <div className="container toh-brief-inner">
-          <Copy animateOnScroll={true}>
-            <p className="sm toh-muted">The Brief</p>
-          </Copy>
+          <div className="toh-brief-lead">
+            <Copy animateOnScroll={true}>
+              <p className="sm toh-muted">The Brief</p>
+            </Copy>
 
-          <Copy animateOnScroll={true}>
-            <h2 className="toh-display toh-brief-title">
-              {"A cafe that plays "}
-              <span className="toh-accent">its own record</span>
-            </h2>
-          </Copy>
+            <Copy animateOnScroll={true}>
+              <h2 className="toh-display toh-brief-title">
+                {"A room worth "}
+                <span className="toh-accent">staying in</span>
+              </h2>
+            </Copy>
 
-          <Copy animateOnScroll={true}>
-            <p className="toh-copy">
-              {`Cafe Toh is as much a room as a menu ${EM} art on the walls, records on the deck, food that regulars order without looking. We shot it in four sides, each one a different reason to walk in, and cut them so the feed plays like a set rather than a catalogue.`}
-            </p>
-          </Copy>
+            <Copy animateOnScroll={true}>
+              <p className="toh-copy">
+                {`Cafe Toh is as much a room as a menu ${EM} art on the walls, food regulars order without looking, and a reason to sit longer than you meant to. We shot it in four parts, each one a different reason to walk in, and cut them so the feed reads as a place rather than a catalogue.`}
+              </p>
+            </Copy>
+          </div>
+
+          {/* Contents: all four parts, the ones that are shot linked
+              through to their rack. */}
+          <div className="toh-contents">
+            <div className="toh-contents-head">
+              <p className="sm toh-muted">Contents</p>
+              <p className="sm toh-muted">
+                {`${String(SECTIONS.length).padStart(2, "0")} Parts`}
+              </p>
+            </div>
+
+            <ul className="toh-contents-list">
+              {SECTIONS.map((item) => {
+                const live = item.media.length > 0;
+
+                const row = (
+                  <>
+                    <span className="sm toh-no">{item.number}</span>
+                    <span className="toh-contents-name">{item.name}</span>
+                    <span className="sm toh-contents-count">
+                      {live ? String(item.media.length).padStart(2, "0") : "--"}
+                    </span>
+                  </>
+                );
+
+                return (
+                  <li
+                    className={live ? "is-live" : "is-pending"}
+                    key={item.name}
+                  >
+                    {live ? (
+                      <a href={`#${slugify(item.name)}`}>{row}</a>
+                    ) : (
+                      <span>{row}</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* --------------------------------------------------------- sides */}
+      {/* ------------------------------------------------------ sections */}
       <div className="container toh-body">
-        <aside className="toh-tracklist">
-          <p className="sm toh-muted">Tracklist</p>
+        <aside className="toh-nav">
+          <p className="sm toh-muted">Contents</p>
 
           <ul>
-            {sides.map((item, i) => (
+            {sections.map((item, i) => (
               <li
                 key={item.name}
                 className={i === active ? "is-active" : undefined}
               >
                 <a href={`#${slugify(item.name)}`}>
-                  <span className="sm toh-side-label">{item.side}</span>
-                  <span className="toh-track-name">{item.name}</span>
+                  <span className="sm toh-no">{item.number}</span>
+                  <span className="toh-nav-name">{item.name}</span>
                 </a>
               </li>
             ))}
           </ul>
         </aside>
 
-        <div className="toh-sides">
-          {sides.map((item, i) => (
+        <div className="toh-sections">
+          {sections.map((item, i) => (
             <section
-              className="toh-side"
+              className="toh-section"
               id={slugify(item.name)}
               key={item.name}
             >
-              <div className="toh-side-head">
+              <div className="toh-section-head">
                 <Copy animateOnScroll={true}>
                   <p className="sm toh-muted">
-                    {`${item.side} / ${String(item.media.length).padStart(
+                    {`${item.number} / ${String(item.media.length).padStart(
                       2,
                       "0"
                     )} frames`}
@@ -491,7 +568,7 @@ const CafeToh = ({ name, next }) => {
                 </Copy>
 
                 <Copy animateOnScroll={true}>
-                  <h2 className="toh-display toh-side-title">{item.name}</h2>
+                  <h2 className="toh-display toh-section-title">{item.name}</h2>
                 </Copy>
 
                 <Copy animateOnScroll={true}>
@@ -499,7 +576,7 @@ const CafeToh = ({ name, next }) => {
                 </Copy>
               </div>
 
-              <Crate
+              <Rack
                 items={item.media}
                 name={item.name}
                 onOpen={(index) => openViewer(i, index)}
@@ -512,9 +589,6 @@ const CafeToh = ({ name, next }) => {
       {/* ------------------------------------------------------- outcome */}
       <section className="toh-outcomes">
         <div className="container">
-          <Copy animateOnScroll={true}>
-            <p className="sm toh-muted">The Outcome</p>
-          </Copy>
 
           {OUTCOMES.map((outcome, i) => (
             <div className="toh-outcome" key={outcome.title}>
@@ -559,7 +633,7 @@ const CafeToh = ({ name, next }) => {
             delay={0.25}
             href={next ? next.href : "/contact"}
           >
-            {next ? "Play the next side" : "Start your story"}
+            {next ? "View the case study" : "Start your story"}
           </Button>
         </div>
       </section>
@@ -568,9 +642,9 @@ const CafeToh = ({ name, next }) => {
 
       <Lightbox
         open={viewer.open}
-        items={sides[viewer.side]?.media ?? []}
+        items={sections[viewer.section]?.media ?? []}
         index={viewer.index}
-        name={sides[viewer.side]?.name ?? name}
+        name={sections[viewer.section]?.name ?? name}
         onClose={closeViewer}
         onStep={stepViewer}
       />
