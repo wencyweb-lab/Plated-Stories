@@ -62,6 +62,71 @@ nav .nav-links .nav-link:hover {
   color: var(--base-100) !important;
 }
 
+nav .nav-item {
+  position: relative;
+  line-height: 1;
+}
+
+nav .nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 13rem;
+  padding-top: 1.25rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms ease, visibility 200ms;
+}
+
+nav .nav-dropdown-inner {
+  transform: translateY(0.5rem);
+  transition: transform 200ms ease;
+}
+
+nav .nav-item:hover .nav-dropdown,
+nav .nav-item:focus-within .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+nav .nav-item:hover .nav-dropdown-inner,
+nav .nav-item:focus-within .nav-dropdown-inner {
+  transform: translateY(0);
+}
+
+nav .nav-dropdown-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem;
+  background-color: var(--base-500);
+  border-radius: 0.5rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.25);
+}
+
+nav .nav-dropdown-link {
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.35rem;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--base-400) !important;
+  cursor: pointer;
+  transition: color 200ms ease, background-color 200ms ease;
+}
+
+nav .nav-dropdown-link:hover {
+  color: var(--base-100) !important;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
 @media (max-width: 1000px) {
   nav {
     padding: 1.25rem;

@@ -157,7 +157,7 @@ const Page = () => {
   return (
     <div className="work-page" ref={workPageContainer}>
       {categories.map((category) => (
-        <section className="work-category" key={category.key}>
+        <section className="work-category" id={category.key} key={category.key}>
           <div className="work-category-header">
             <Copy animateOnScroll={true}>
               <h2>{category.title}</h2>

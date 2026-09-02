@@ -5,6 +5,7 @@
 
 .work-category {
   width: 100%;
+  scroll-margin-top: 8rem;
 }
 
 /* Clears the fixed nav so the first category title is never sat on. */
