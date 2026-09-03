@@ -378,6 +378,12 @@
   cursor: pointer;
 }
 
+/* Texture footage reads better wide than tall. */
+.toh-case .toh-frame--landscape {
+  aspect-ratio: 6 / 4;
+  flex-basis: clamp(20rem, 34vw, 30rem);
+}
+
 .toh-case .toh-frame:nth-child(even) {
   transform: rotate(1.6deg);
 }
@@ -669,6 +675,10 @@
 
   .toh-case .toh-frame {
     flex-basis: clamp(13rem, 62vw, 18rem);
+  }
+
+  .toh-case .toh-frame--landscape {
+    flex-basis: clamp(16rem, 78vw, 22rem);
   }
 
   .toh-case .toh-outcome {

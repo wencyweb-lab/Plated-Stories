@@ -53,12 +53,18 @@ const SECTIONS = [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381158/tcfvghbj.png",
     ],
   },
-  // Awaiting media — each part appears the moment its links land.
   {
     number: "03",
     name: "Textures",
     copy: `Close enough to feel it ${EM} crumb, foam, grain and glaze at a distance no diner gets.`,
-    media: [],
+    // Wider than the other racks — texture footage reads better landscape.
+    frame: "landscape",
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413984/eyi.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413980/eiruo.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413967/xfgfchvgj.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413967/rwe.mp4",
+    ],
   },
   {
     number: "04",
@@ -91,8 +97,12 @@ const slugify = (name) =>
 
 // A single frame in a rack. Reels loop muted here; sound lives in the
 // lightbox, where the visitor has actually asked for the thing.
-const Frame = ({ src, label, onOpen }) => (
-  <button type="button" className="toh-frame" onClick={onOpen}>
+const Frame = ({ src, label, landscape, onOpen }) => (
+  <button
+    type="button"
+    className={`toh-frame${landscape ? " toh-frame--landscape" : ""}`}
+    onClick={onOpen}
+  >
     {isVideo(src) ? (
       <video src={src} autoPlay muted loop playsInline preload="metadata" />
     ) : (
@@ -109,7 +119,8 @@ const AUTOPLAY_MS = 3200;
 // the scrolling, so trackpads, wheels and touch all keep working; the
 // pointer handlers only add drag on top of it. Left alone, it also drifts
 // itself one frame at a time and loops back once it runs out of rail.
-const Rack = ({ items, name, onOpen }) => {
+const Rack = ({ items, name, frame, onOpen }) => {
+  const landscape = frame === "landscape";
   const railRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const drag = useRef({ active: false, startX: 0, startLeft: 0, moved: 0 });
@@ -213,6 +224,7 @@ const Rack = ({ items, name, onOpen }) => {
             key={src}
             src={src}
             label={`${name} ${i + 1}`}
+            landscape={landscape}
             // A drag that travelled is a drag, not a click on a tile.
             onOpen={() => {
               if (drag.current.moved > 6) return;
@@ -622,6 +634,7 @@ const CafeToh = ({ name, next }) => {
               <Rack
                 items={item.media}
                 name={item.name}
+                frame={item.frame}
                 onOpen={(index) => openViewer(i, index)}
               />
             </section>
