@@ -369,8 +369,7 @@
   background-color: var(--toh-panel);
   transform: rotate(-1.4deg);
   will-change: transform;
-  transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 450ms ease;
+  transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .toh-case .toh-frame {
@@ -385,8 +384,7 @@
 
 .toh-case .toh-frame:hover,
 .toh-case .toh-frame:focus-visible {
-  transform: rotate(0deg) translateY(-0.6rem) scale(1.02);
-  box-shadow: 0 26px 50px rgba(18, 16, 15, 0.22);
+  transform: scale(1.04);
   outline: none;
   z-index: 2;
 }

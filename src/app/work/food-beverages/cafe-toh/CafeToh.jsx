@@ -102,13 +102,19 @@ const Frame = ({ src, label, onOpen }) => (
   </button>
 );
 
+// How long a frame holds before the rack auto-advances to the next one.
+const AUTOPLAY_MS = 3200;
+
 // A horizontal rack you drag, throw or arrow through. Native overflow does
 // the scrolling, so trackpads, wheels and touch all keep working; the
-// pointer handlers only add drag on top of it.
+// pointer handlers only add drag on top of it. Left alone, it also drifts
+// itself one frame at a time and loops back once it runs out of rail.
 const Rack = ({ items, name, onOpen }) => {
   const railRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const drag = useRef({ active: false, startX: 0, startLeft: 0, moved: 0 });
+  const paused = useRef(false);
+  const autoplayId = useRef(null);
 
   const readProgress = useCallback(() => {
     const rail = railRef.current;
@@ -131,7 +137,37 @@ const Rack = ({ items, name, onOpen }) => {
     rail.scrollBy({ left: by * direction, behavior: "smooth" });
   };
 
+  // Idles forward on its own so a rack nobody touches still tells its story;
+  // any real interaction (drag, hover, keyboard) pauses it for good until
+  // the visitor moves on.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    autoplayId.current = setInterval(() => {
+      const rail = railRef.current;
+      if (!rail || paused.current) return;
+
+      const max = rail.scrollWidth - rail.clientWidth;
+      if (max <= 0) return;
+
+      if (rail.scrollLeft >= max - 4) {
+        rail.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        step(1);
+      }
+    }, AUTOPLAY_MS);
+
+    return () => clearInterval(autoplayId.current);
+  }, [items]);
+
+  const pauseAutoplay = () => {
+    paused.current = true;
+  };
+
   const onPointerDown = (e) => {
+    pauseAutoplay();
     const rail = railRef.current;
     if (!rail || e.pointerType === "touch") return;
     drag.current = {
@@ -170,6 +206,7 @@ const Rack = ({ items, name, onOpen }) => {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onWheel={pauseAutoplay}
       >
         {items.map((src, i) => (
           <Frame
@@ -195,7 +232,10 @@ const Rack = ({ items, name, onOpen }) => {
           <button
             type="button"
             className="toh-round"
-            onClick={() => step(-1)}
+            onClick={() => {
+              pauseAutoplay();
+              step(-1);
+            }}
             aria-label={`Previous frame in ${name}`}
           >
             <LuArrowLeft size={16} />
@@ -203,7 +243,10 @@ const Rack = ({ items, name, onOpen }) => {
           <button
             type="button"
             className="toh-round"
-            onClick={() => step(1)}
+            onClick={() => {
+              pauseAutoplay();
+              step(1);
+            }}
             aria-label={`Next frame in ${name}`}
           >
             <LuArrowRight size={16} />
