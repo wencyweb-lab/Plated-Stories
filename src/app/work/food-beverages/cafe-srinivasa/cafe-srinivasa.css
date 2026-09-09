@@ -1,57 +1,12 @@
-/* Bespoke case-study layout for /work/food-beverages/cafe-srinivasa.
-   Everything below the hero is scoped under .cs-case so it cannot reach
-   another project page. The header + banner above it still come from
-   ProjectPage.css (imported by the component) and are untouched.
-   Built on the existing tokens (--base-100/300/400/500), the `.sm` mono
-   eyebrow and the DM Sans display headline. */
+/* Cafe Srinivasa — what is genuinely this project's own.
 
-.cs-case {
-  position: relative;
-  width: 100%;
-  background-color: var(--base-100);
-  color: var(--base-400);
-  overflow-x: hidden;
-}
-
-/* Display headline shared by every section label. Letter-spacing is set in
-   `em`, not `rem`, so tracking stays proportional at every size — the fixed
-   values in globals.css crowd words together as the font-size drops. */
-.cs-case .cs-display {
-  font-family: "DM Sans";
-  font-weight: 900;
-  text-transform: uppercase;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.cs-case .cs-accent {
-  color: var(--base-500);
-}
-
-.cs-case .cs-index {
-  color: var(--base-300);
-}
-
-/* globals.css only styles `.sm` on p/a, so the series-index numbers — spans
-   inside the row link — were falling back to the body font. Same mono
-   treatment, scoped to this page. */
-.cs-case span.sm {
-  font-family: "Geist Mono";
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: 0.1rem;
-}
-
-.cs-case .cs-copy {
-  font-size: clamp(1.05rem, 1.35vw, 1.4rem);
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--base-300);
-  text-wrap: pretty;
-}
+   The contents card, the chapter flow, the frames, the marquee, the viewer,
+   the outcome rows and the closing all come from
+   @/components/CaseStudy/CaseStudy.css. This file only carries the showreel
+   stacking and the brief. The header + pinned banner above them still come
+   from ProjectPage.css / Showreel.css (imported by the components) and are
+   untouched. Scoped under .cs-case, which sits alongside .case-study on the
+   page root. */
 
 /* ------------------------------------------------------------- showreel */
 
@@ -79,15 +34,17 @@
   z-index: 2;
 }
 
-/* ----------------------------------------------------------------- brief */
+/* ---------------------------------------------------------------- brief */
 
+/* The brief and the contents card share a line: the argument and the
+   credits on the left, the map of the study on the right. */
 .cs-case .cs-brief {
   padding: clamp(5rem, 11vh, 9rem) 0 clamp(3rem, 7vh, 6rem);
 }
 
 .cs-case .cs-brief-inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   gap: clamp(2rem, 5vw, 5rem);
   align-items: start;
 }
@@ -96,27 +53,24 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  position: sticky;
-  top: 8rem;
 }
 
 .cs-case .cs-brief-title {
   font-size: clamp(2.5rem, 5.5vw, 5.5rem);
 }
 
-.cs-case .cs-brief-body {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(2rem, 4vh, 3.5rem);
-  padding-top: 0.5rem;
+.cs-case .cs-brief-lead .cs-copy {
+  margin-top: 1rem;
+  max-width: 44rem;
 }
 
 .cs-case .cs-meta {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
+  margin-top: clamp(1.5rem, 3vh, 2.5rem);
   padding-top: 2rem;
-  border-top: 1px solid rgba(26, 22, 20, 0.14);
+  border-top: 1px solid var(--cs-line);
 }
 
 .cs-case .cs-meta-item {
@@ -130,319 +84,6 @@
   line-height: 1.35;
 }
 
-/* ---------------------------------------------------------- series index */
-
-.cs-case .cs-toc {
-  padding: clamp(3rem, 7vh, 6rem) 0 clamp(2rem, 5vh, 4rem);
-}
-
-.cs-case .cs-toc-list {
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 0;
-}
-
-.cs-case .cs-toc-item {
-  border-top: 1px solid rgba(26, 22, 20, 0.14);
-}
-
-.cs-case .cs-toc-item:last-child {
-  border-bottom: 1px solid rgba(26, 22, 20, 0.14);
-}
-
-.cs-case .cs-toc-item a {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
-  padding: clamp(1rem, 2.5vh, 1.75rem) 0;
-  text-decoration: none;
-  color: inherit;
-}
-
-.cs-case .cs-toc-name {
-  font-size: clamp(1.75rem, 4.5vw, 4rem);
-  transition: color 300ms ease, transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.cs-case .cs-toc-item a:hover .cs-toc-name {
-  color: var(--base-500);
-  transform: translateX(0.75rem);
-}
-
-/* --------------------------------------------------------------- series */
-
-.cs-case .cs-series {
-  padding: clamp(3.5rem, 8vh, 7rem) 0;
-}
-
-/* Alternate the ground so the series read as separate chapters rather than
-   one long scroll of galleries. */
-.cs-case .cs-series:nth-child(even) {
-  background-color: var(--base-400);
-  color: var(--base-100);
-}
-
-.cs-case .cs-series:nth-child(even) .cs-index,
-.cs-case .cs-series:nth-child(even) .cs-copy {
-  color: rgba(255, 255, 255, 0.66);
-}
-
-.cs-case .cs-series-inner {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.75rem, 4vh, 3rem);
-}
-
-.cs-case .cs-series-head {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.cs-case .cs-series-title {
-  font-size: clamp(2.25rem, 3.6vw, 4rem);
-}
-
-.cs-case .cs-series-head .cs-copy {
-  margin-top: 0.5rem;
-  max-width: 46rem;
-}
-
-/* Multi-column rather than grid: the exports arrive at mixed aspect ratios,
-   and columns tile them at their natural shape with no cropping and no ragged
-   row gaps. Three across keeps each frame at a scale that reads as a set
-   instead of eating a screen each. */
-/* --cols is set per series in the component (default 3); a series can ask
-   for its whole set on one line by naming its own count. */
-.cs-case .cs-gallery {
-  column-count: var(--cols, 3);
-  column-gap: clamp(0.75rem, 1.5vw, 1.25rem);
-}
-
-.cs-case .cs-frame {
-  position: relative;
-  break-inside: avoid;
-  margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
-  overflow: hidden;
-  background-color: rgba(26, 22, 20, 0.06);
-}
-
-/* Every still in this project exports at 3375x4219 (4:5), so the tile locks
-   to that ratio and a vertical reel is centre-cropped into the same frame
-   rather than running twice as tall as the stills beside it. */
-.cs-case .cs-frame img,
-.cs-case .cs-frame video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  object-position: center;
-  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.cs-case .cs-frame:hover img {
-  transform: scale(1.04);
-}
-
-/* A reel sits in the same column flow as the stills — no zoom on hover,
-   since the frame carries controls instead. */
-.cs-case .cs-frame--video {
-  aspect-ratio: 4 / 5;
-  background-color: rgba(23, 20, 18, 0.9);
-}
-
-.cs-case .cs-frame--video:focus-visible {
-  outline: 2px solid var(--base-500);
-  outline-offset: 2px;
-}
-
-.cs-case .cs-frame-controls {
-  position: absolute;
-  bottom: 0.75rem;
-  right: 0.75rem;
-  z-index: 2;
-  display: flex;
-  gap: 0.5rem;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(0.4rem);
-  transition: opacity 300ms ease, transform 300ms ease, visibility 300ms;
-}
-
-.cs-case .cs-frame--video:hover .cs-frame-controls,
-.cs-case .cs-frame--video:focus-within .cs-frame-controls {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.cs-case .cs-frame-btn {
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 100%;
-  background-color: rgba(23, 20, 18, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: var(--base-100);
-  cursor: pointer;
-  transition: background-color 200ms ease, transform 200ms ease;
-}
-
-.cs-case .cs-frame-btn:hover {
-  background-color: rgba(23, 20, 18, 0.85);
-  transform: scale(1.08);
-}
-
-.cs-case .cs-frame-btn:active {
-  transform: scale(0.94);
-}
-
-/* Touch has no hover: keep the controls visible there. */
-@media (hover: none) {
-  .cs-case .cs-frame-controls {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-  }
-}
-
-/* ------------------------------------------------------------- marquee */
-
-/* A series can run as an endless single-line strip instead of a grid.
-   Four tiles are visible at a time; the track carries the set twice and
-   travels exactly one set's width, so the loop is seamless. Sizing is in
-   `cqw` against the strip itself — a percentage width inside a
-   content-sized flex track would resolve circularly. */
-.cs-case .cs-marquee {
-  --marquee-gap: clamp(0.75rem, 1.5vw, 1.25rem);
-  container-type: inline-size;
-  position: relative;
-  overflow: hidden;
-  /* Fades the strip out into the section ground at both ends. */
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 9%,
-    #000 91%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 9%,
-    #000 91%,
-    transparent 100%
-  );
-}
-
-.cs-case .cs-marquee-track {
-  display: flex;
-  width: max-content;
-  gap: var(--marquee-gap);
-  animation: cs-marquee-scroll var(--marquee-duration, 30s) linear infinite;
-}
-
-.cs-case .cs-marquee .cs-frame {
-  flex: 0 0 calc((100cqw - 3 * var(--marquee-gap)) / 4);
-  margin-bottom: 0;
-}
-
-/* Hovering any tile stops the strip — including the reel, so its controls
-   stay under the cursor. Focus does the same for keyboard users. */
-.cs-case .cs-marquee-track:has(.cs-frame:hover),
-.cs-case .cs-marquee-track:focus-within {
-  animation-play-state: paused;
-}
-
-@keyframes cs-marquee-scroll {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    /* One full set = half the track plus half a gap. */
-    transform: translate3d(calc(-50% - var(--marquee-gap) / 2), 0, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cs-case .cs-marquee-track {
-    animation: none;
-  }
-
-  .cs-case .cs-marquee {
-    overflow-x: auto;
-  }
-}
-
-/* -------------------------------------------------------------- outcome */
-
-.cs-case .cs-outcomes {
-  padding: clamp(4rem, 10vh, 8rem) 0;
-}
-
-.cs-case .cs-outcome {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  align-items: end;
-  gap: 2rem;
-  padding: clamp(2rem, 4.5vh, 3.5rem) 0;
-  border-top: 1px solid rgba(26, 22, 20, 0.14);
-}
-
-.cs-case .cs-outcomes > .container > .cs-outcome:first-of-type {
-  margin-top: 1.5rem;
-}
-
-.cs-case .cs-outcome:last-child {
-  border-bottom: 1px solid rgba(26, 22, 20, 0.14);
-}
-
-.cs-case .cs-outcome-head {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.cs-case .cs-outcome-title {
-  font-size: clamp(2rem, 5vw, 5.5rem);
-  transition: color 300ms ease;
-}
-
-.cs-case .cs-outcome:hover .cs-outcome-title {
-  color: var(--base-500);
-}
-
-.cs-case .cs-outcome-value p {
-  font-size: clamp(1.05rem, 1.5vw, 1.5rem);
-  line-height: 1.4;
-  color: var(--base-300);
-  padding-bottom: 0.5rem;
-}
-
-/* -------------------------------------------------------------- closing */
-
-.cs-case .cs-closing {
-  padding: clamp(4rem, 9vh, 8rem) 0 clamp(5rem, 12vh, 10rem);
-}
-
-.cs-case .cs-closing-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  text-align: center;
-}
-
-.cs-case .cs-closing-title {
-  font-size: clamp(2.5rem, 7vw, 8rem);
-  margin-bottom: 1rem;
-}
-
 /* ----------------------------------------------------------- responsive */
 
 @media (max-width: 1000px) {
@@ -450,47 +91,12 @@
     grid-template-columns: 1fr;
   }
 
-  .cs-case .cs-brief-lead {
-    position: static;
-  }
-
-  .cs-case .cs-series-head .cs-copy {
+  .cs-case .cs-brief-lead .cs-copy {
     max-width: none;
   }
 
   .cs-case .cs-meta {
     grid-template-columns: 1fr;
     gap: 1.25rem;
-  }
-
-  .cs-case .cs-gallery {
-    column-count: 2;
-  }
-
-  .cs-case .cs-marquee .cs-frame {
-    flex-basis: calc((100cqw - var(--marquee-gap)) / 2);
-  }
-
-  .cs-case span.sm {
-    font-size: 0.8rem;
-    letter-spacing: 0.05rem;
-  }
-
-  .cs-case .cs-outcome {
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 1rem;
-  }
-
-  /* globals.css zeroes heading letter-spacing with !important below 1000px;
-     restore the proportional tracking for the display type. */
-  .cs-case .cs-display {
-    letter-spacing: -0.02em !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .cs-case .cs-gallery {
-    column-count: 1;
   }
 }

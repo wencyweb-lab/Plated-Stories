@@ -1,74 +1,17 @@
-/* Bespoke case-study layout for /work/food-beverages/cafe-toh.
-   Scoped under .toh-case (plus .toh-lightbox, which sits at the top level
-   while open) so it cannot reach any other project page.
+/* Cafe Toh — what is genuinely this project's own.
 
-   Paper-white editorial layout built on one tile: an opening strip of them
-   in the hero, a contents card, a sticky contents rail, and a draggable
-   rack of them per part. */
+   The contents card, the chapter flow, the frames, the marquee, the viewer,
+   the outcome rows and the closing all come from
+   @/components/CaseStudy/CaseStudy.css. This file only carries the hero and
+   the brief, plus the token overrides that give the page its paper-white
+   ground. Scoped under .toh-case, which sits alongside .case-study on the
+   page root. */
 
 .toh-case {
-  --toh-ink: #12100f;
-  --toh-ground: #ffffff;
-  --toh-panel: #f4f0ea;
-  --toh-line: rgba(18, 16, 15, 0.14);
-  --toh-dim: #8c7e77;
-
-  position: relative;
-  width: 100%;
-  background-color: var(--toh-ground);
-  color: var(--toh-ink);
-  overflow-x: hidden;
-  /* globals.css puts the type stack on p and h1-h4, not on body, so a bare
-     <span> or <button> falls back to the browser's serif default. The
-     contents rows are spans; give the whole page the body face. */
-  font-family: "PP Neue Montreal";
-}
-
-.toh-case button,
-.toh-lightbox button {
-  font-family: inherit;
-}
-
-.toh-lightbox {
-  font-family: "PP Neue Montreal";
-}
-
-.toh-case .toh-display {
-  font-family: "DM Sans";
-  font-weight: 900;
-  text-transform: uppercase;
-  line-height: 0.9;
-  /* `em`, not `rem`: tracking has to stay proportional as the size drops. */
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.toh-case .toh-accent {
-  color: var(--base-500);
-}
-
-.toh-case .toh-muted,
-.toh-case .toh-eyebrow {
-  color: var(--toh-dim);
-}
-
-.toh-case .toh-copy {
-  font-size: clamp(1.05rem, 1.35vw, 1.4rem);
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--toh-dim);
-  text-wrap: pretty;
-}
-
-/* globals.css only styles `.sm` on p/a — spans need it spelled out. */
-.toh-case span.sm,
-.toh-lightbox span.sm {
-  font-family: "Geist Mono";
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: 0.1rem;
+  /* A colder, brighter paper than the shared default. */
+  --cs-ink: #12100f;
+  --cs-dim: #8c7e77;
+  --cs-line: rgba(18, 16, 15, 0.14);
 }
 
 /* ------------------------------------------------------------------ hero */
@@ -101,7 +44,7 @@
   font-size: clamp(3rem, 11vw, 12rem);
 }
 
-/* One tile per part, in a row: the same object the racks below are built
+/* One tile per part, in a row: the same object the chapters below are built
    from, so the hero opens in the page's own vocabulary instead of a
    scattered collage. */
 .toh-case .toh-hero-strip {
@@ -111,11 +54,31 @@
   pointer-events: none;
 }
 
-/* Every other tile sits a little lower, so the row reads as a hand-laid
-   set rather than a filmstrip. */
+.toh-case .toh-tile {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--cs-line);
+  border-radius: 0.35rem;
+  overflow: hidden;
+  background-color: var(--cs-panel);
+  transform: rotate(-1.4deg);
+  will-change: transform;
+}
+
+/* Every other tile leans the other way and sits a little lower, so the row
+   reads as a hand-laid set rather than a filmstrip. */
 .toh-case .toh-hero-tile--2,
 .toh-case .toh-hero-tile--4 {
   transform: translateY(1.5rem) rotate(1.6deg);
+}
+
+.toh-case .toh-tile img,
+.toh-case .toh-tile video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
 }
 
 .toh-case .toh-hero-meta {
@@ -123,7 +86,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--toh-line);
+  border-top: 1px solid var(--cs-line);
   max-width: 60rem;
 }
 
@@ -140,6 +103,8 @@
 
 /* ----------------------------------------------------------------- brief */
 
+/* The brief and the contents card share a line: the argument on the left,
+   the map of the study on the right. */
 .toh-case .toh-brief {
   padding: clamp(4rem, 11vh, 9rem) 0 clamp(3rem, 7vh, 6rem);
 }
@@ -161,472 +126,9 @@
   font-size: clamp(2.5rem, 5.5vw, 5.5rem);
 }
 
-.toh-case .toh-brief-lead .toh-copy {
+.toh-case .toh-brief-lead .cs-copy {
   margin-top: 1rem;
   max-width: 40rem;
-}
-
-/* -------------------------------------------------------------- contents */
-
-.toh-case .toh-contents {
-  background-color: var(--toh-panel);
-  border: 1px solid var(--toh-line);
-  border-radius: 0.5rem;
-  padding: clamp(1.25rem, 2.5vw, 2rem);
-}
-
-.toh-case .toh-contents-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--toh-line);
-}
-
-.toh-case .toh-contents-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.toh-case .toh-contents-list li {
-  border-bottom: 1px solid var(--toh-line);
-}
-
-.toh-case .toh-contents-list li:last-child {
-  border-bottom: none;
-}
-
-.toh-case .toh-contents-list a,
-.toh-case .toh-contents-list li > span {
-  display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.9rem 0;
-  text-decoration: none;
-  color: inherit;
-}
-
-.toh-case .toh-contents-name {
-  font-size: 1.05rem;
-  line-height: 1.25;
-}
-
-.toh-case .toh-contents-count,
-.toh-case .toh-contents-list .toh-no {
-  color: var(--toh-dim);
-}
-
-.toh-case .toh-contents-list .is-pending {
-  color: var(--toh-dim);
-}
-
-.toh-case .toh-contents-list .is-live a {
-  transition: padding-left 300ms ease;
-}
-
-.toh-case .toh-contents-list .is-live a:hover {
-  padding-left: 0.4rem;
-}
-
-.toh-case .toh-contents-list .is-live a:hover .toh-no {
-  color: var(--base-500);
-}
-
-/* ------------------------------------------------------------ nav + body */
-
-.toh-case .toh-body {
-  display: grid;
-  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: start;
-  padding-top: clamp(2rem, 5vh, 4rem);
-  padding-bottom: clamp(4rem, 10vh, 8rem);
-}
-
-.toh-case .toh-nav {
-  position: sticky;
-  top: 8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.toh-case .toh-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.toh-case .toh-nav li {
-  border-top: 1px solid var(--toh-line);
-}
-
-.toh-case .toh-nav li:last-child {
-  border-bottom: 1px solid var(--toh-line);
-}
-
-.toh-case .toh-nav a {
-  display: flex;
-  align-items: baseline;
-  gap: 0.9rem;
-  padding: 0.9rem 0;
-  text-decoration: none;
-  color: var(--toh-dim);
-  transition: color 250ms ease, padding-left 300ms ease;
-}
-
-.toh-case .toh-nav a:hover {
-  color: var(--toh-ink);
-  padding-left: 0.4rem;
-}
-
-.toh-case .toh-nav .is-active a {
-  color: var(--toh-ink);
-}
-
-.toh-case .toh-nav .is-active .toh-no {
-  color: var(--base-500);
-}
-
-.toh-case .toh-nav-name {
-  font-size: 1rem;
-  line-height: 1.25;
-}
-
-/* -------------------------------------------------------------- sections */
-
-.toh-case .toh-sections {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(4rem, 10vh, 8rem);
-}
-
-.toh-case .toh-section {
-  scroll-margin-top: 7rem;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.5rem, 3vh, 2.5rem);
-}
-
-.toh-case .toh-section-head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.toh-case .toh-section-title {
-  font-size: clamp(2rem, 4.5vw, 4.5rem);
-}
-
-.toh-case .toh-section-head .toh-copy {
-  max-width: 44rem;
-}
-
-/* ------------------------------------------------------------------ rack */
-
-.toh-case .toh-rack {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Native overflow does the scrolling — wheel, trackpad and touch all keep
-   working — and the pointer handlers only add drag on top of it. */
-.toh-case .toh-rail {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1.5rem 0.5rem 2rem;
-  margin: -1.5rem -0.5rem -2rem;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-  cursor: grab;
-}
-
-.toh-case .toh-rail::-webkit-scrollbar {
-  display: none;
-}
-
-.toh-case .toh-rail:active {
-  cursor: grabbing;
-}
-
-/* The tile — one object, used by the hero strip and by every rack. Tiles
-   lean slightly and straighten under the cursor. */
-.toh-case .toh-tile,
-.toh-case .toh-frame {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  padding: 0;
-  border: 1px solid var(--toh-line);
-  border-radius: 0.35rem;
-  overflow: hidden;
-  background-color: var(--toh-panel);
-  transform: rotate(-1.4deg);
-  will-change: transform;
-  transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.toh-case .toh-frame {
-  flex: 0 0 clamp(15rem, 24vw, 23rem);
-  scroll-snap-align: start;
-  cursor: pointer;
-}
-
-/* Texture footage reads better wide than tall. */
-.toh-case .toh-frame--landscape {
-  aspect-ratio: 6 / 4;
-  flex-basis: clamp(20rem, 34vw, 30rem);
-}
-
-.toh-case .toh-frame:nth-child(even) {
-  transform: rotate(1.6deg);
-}
-
-.toh-case .toh-frame:hover,
-.toh-case .toh-frame:focus-visible {
-  transform: scale(1.04);
-  outline: none;
-  z-index: 2;
-}
-
-.toh-case .toh-tile img,
-.toh-case .toh-tile video,
-.toh-case .toh-frame img,
-.toh-case .toh-frame video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-}
-
-.toh-case .toh-frame-cue {
-  position: absolute;
-  left: 0.9rem;
-  bottom: 0.9rem;
-  padding: 0.4rem 0.75rem;
-  border-radius: 2rem;
-  background-color: rgba(18, 16, 15, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: #ffffff;
-  opacity: 0;
-  transform: translateY(0.4rem);
-  transition: opacity 250ms ease, transform 250ms ease;
-}
-
-.toh-case .toh-frame:hover .toh-frame-cue,
-.toh-case .toh-frame:focus-visible .toh-frame-cue {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.toh-case .toh-rack-foot {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-/* How far through the rack you are. */
-.toh-case .toh-scrub {
-  position: relative;
-  flex: 1;
-  height: 2px;
-  background-color: var(--toh-line);
-  overflow: hidden;
-}
-
-.toh-case .toh-scrub span {
-  position: absolute;
-  inset: 0;
-  background-color: var(--base-500);
-  transform-origin: left center;
-  transition: transform 150ms linear;
-}
-
-.toh-case .toh-controls,
-.toh-lightbox .toh-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.toh-case .toh-hint {
-  color: var(--toh-dim);
-  margin-right: 0.25rem;
-}
-
-.toh-case .toh-round {
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--toh-line);
-  border-radius: 100%;
-  background-color: transparent;
-  color: var(--toh-ink);
-  cursor: pointer;
-  transition: background-color 200ms ease, transform 200ms ease,
-    border-color 200ms ease, color 200ms ease;
-}
-
-.toh-case .toh-round:hover {
-  background-color: var(--base-500);
-  border-color: var(--base-500);
-  color: #ffffff;
-  transform: scale(1.08);
-}
-
-.toh-case .toh-round:active {
-  transform: scale(0.94);
-}
-
-/* -------------------------------------------------------------- lightbox */
-
-/* The viewer stays dark whatever the page does — photography reads best
-   against near-black, and it is a room of its own. */
-.toh-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(1.5rem, 5vh, 4rem) 0 clamp(4.5rem, 9vh, 7rem);
-}
-
-.toh-lightbox-bg {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(10, 9, 8, 0.94);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.toh-lightbox-stage {
-  position: relative;
-  max-width: min(92vw, 1100px);
-  max-height: 78svh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.toh-lightbox-stage img,
-.toh-lightbox-stage video {
-  max-width: min(92vw, 1100px);
-  max-height: 78svh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  border-radius: 0.35rem;
-}
-
-.toh-lightbox-bar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: clamp(1.25rem, 4vh, 2.5rem);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  color: #f6f1ec;
-}
-
-.toh-lightbox-bar p.sm {
-  color: rgba(246, 241, 236, 0.7);
-}
-
-.toh-lightbox .toh-round {
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(246, 241, 236, 0.24);
-  border-radius: 100%;
-  background-color: transparent;
-  color: #f6f1ec;
-  cursor: pointer;
-  transition: background-color 200ms ease, transform 200ms ease,
-    border-color 200ms ease;
-}
-
-.toh-lightbox .toh-round:hover {
-  background-color: var(--base-500);
-  border-color: var(--base-500);
-  transform: scale(1.08);
-}
-
-.toh-lightbox .toh-round:active {
-  transform: scale(0.94);
-}
-
-/* --------------------------------------------------------------- outcome */
-
-.toh-case .toh-outcomes {
-  padding: clamp(3rem, 8vh, 6rem) 0;
-}
-
-/* Ruled underneath, not on top: a border-top on the first row drew a line
-   directly under the "The Outcome" label. */
-.toh-case .toh-outcome {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  align-items: end;
-  gap: 2rem;
-  padding: clamp(2rem, 4.5vh, 3.5rem) 0;
-  border-bottom: 1px solid var(--toh-line);
-}
-
-.toh-case .toh-outcome-head {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.toh-case .toh-outcome-title {
-  font-size: clamp(2rem, 5vw, 5.5rem);
-  transition: color 300ms ease;
-}
-
-.toh-case .toh-outcome:hover .toh-outcome-title {
-  color: var(--base-500);
-}
-
-.toh-case .toh-outcome-value p {
-  font-size: clamp(1.05rem, 1.5vw, 1.5rem);
-  line-height: 1.4;
-  color: var(--toh-dim);
-  padding-bottom: 0.5rem;
-}
-
-/* --------------------------------------------------------------- closing */
-
-.toh-case .toh-closing {
-  padding: clamp(4rem, 10vh, 8rem) 0 clamp(5rem, 12vh, 10rem);
-}
-
-.toh-case .toh-closing-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  text-align: center;
-}
-
-.toh-case .toh-closing-title {
-  font-size: clamp(2.5rem, 7vw, 8rem);
-  margin-bottom: 1rem;
 }
 
 /* ------------------------------------------------------------ responsive */
@@ -647,57 +149,13 @@
     gap: 1.25rem;
   }
 
-  .toh-case .toh-brief-inner,
-  .toh-case .toh-body {
+  .toh-case .toh-brief-inner {
     grid-template-columns: 1fr;
-  }
-
-  /* The contents rail becomes a chip row above the sections. */
-  .toh-case .toh-nav {
-    position: static;
-  }
-
-  .toh-case .toh-nav ul {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .toh-case .toh-nav li,
-  .toh-case .toh-nav li:last-child {
-    border: 1px solid var(--toh-line);
-    border-radius: 2rem;
-  }
-
-  .toh-case .toh-nav a {
-    padding: 0.5rem 0.9rem;
-  }
-
-  .toh-case .toh-frame {
-    flex-basis: clamp(13rem, 62vw, 18rem);
-  }
-
-  .toh-case .toh-frame--landscape {
-    flex-basis: clamp(16rem, 78vw, 22rem);
-  }
-
-  .toh-case .toh-outcome {
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 1rem;
-  }
-
-  /* globals.css zeroes heading letter-spacing with !important below 1000px;
-     restore the proportional tracking for the display type. */
-  .toh-case .toh-display {
-    letter-spacing: -0.02em !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .toh-case .toh-tile,
-  .toh-case .toh-frame {
+  .toh-case .toh-tile {
     transform: none;
-    transition: none;
   }
 }

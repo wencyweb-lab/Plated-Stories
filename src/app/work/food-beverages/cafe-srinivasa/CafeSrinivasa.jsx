@@ -1,16 +1,19 @@
 "use client";
 import "@/components/ProjectPage/ProjectPage.css";
+import "@/components/CaseStudy/CaseStudy.css";
 import "./cafe-srinivasa.css";
-import { useEffect, useRef, useState } from "react";
-import { LuVolumeX, LuVolume, LuPlay, LuPause } from "react-icons/lu";
+import { useCallback, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Footer from "@/components/Footer/Footer";
 import Copy from "@/components/Copy/Copy";
 import Button from "@/components/Button/Button";
+import ContentsIndex from "@/components/CaseStudy/ContentsIndex";
+import SeriesSection from "@/components/CaseStudy/SeriesSection";
+import Lightbox from "@/components/CaseStudy/Lightbox";
+import { pad } from "@/components/CaseStudy/media";
 import CsShowreel from "./CsShowreel";
-import { isVideo } from "./media";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -28,11 +31,11 @@ const META = [
 ];
 
 // The shoot is organised as named series, mirroring the folders in the
-// project's Drive. Each entry renders its own section: the title and copy
-// first, then the gallery underneath at reading width. `media` takes stills
-// and reels alike — anything ending .mp4 renders as a muted autoplaying
-// video with its own controls. A series with no media yet is skipped
-// entirely, so filling one in later is a one-line change here.
+// project's Drive. Each entry renders its own chapter: the title and copy
+// first, then the media underneath. `media` takes stills and reels alike —
+// anything ending .mp4 renders as a muted autoplaying video with its own
+// controls. A series with no media yet is listed in the contents card but
+// has no chapter, so filling one in later is a one-line change here.
 const SERIES = [
   {
     name: "Classics",
@@ -126,123 +129,37 @@ const OUTCOMES = [
   { title: "Brand Impact", value: "Stronger Recognition & Recall" },
 ];
 
-const slugify = (name) =>
-  name
-    .toLowerCase()
-    .replace(/&/g, "and")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-
-const pad = (n) => String(n).padStart(2, "0");
-
-// A single gallery tile. Stills are plain images; a reel autoplays muted
-// (the only way browsers allow it) and carries the same play/mute cluster
-// the hero banner uses, revealed on hover or focus.
-const Frame = ({ src, label, className = "", hidden = false }) => {
-  const videoRef = useRef(null);
-  const userPausedRef = useRef(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  // The page carries a lot of reels, and the marquee clones its track, so
-  // several sections' worth of video would otherwise decode at once. Only
-  // what is actually on screen plays; a deliberate pause is remembered so
-  // scrolling past and back does not restart it.
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || typeof IntersectionObserver === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          if (!userPausedRef.current) video.play().catch(() => {});
-        } else if (!video.paused) {
-          video.pause();
-        }
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
-
-  if (!isVideo(src)) {
-    return (
-      <div className={`cs-frame ${className}`.trim()} aria-hidden={hidden}>
-        <img src={src} alt={hidden ? "" : label} loading="lazy" />
-      </div>
-    );
-  }
-
-  const toggleMute = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    if (!video.muted) video.volume = 1;
-  };
-
-  const togglePlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      userPausedRef.current = false;
-      video.play().catch(() => {});
-    } else {
-      userPausedRef.current = true;
-      video.pause();
-    }
-  };
-
-  return (
-    <div
-      className={`cs-frame cs-frame--video ${className}`.trim()}
-      tabIndex={hidden ? -1 : 0}
-      aria-hidden={hidden}
-    >
-      <video
-        ref={videoRef}
-        src={src}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-label={label}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onVolumeChange={(e) => setIsMuted(e.currentTarget.muted)}
-      />
-
-      <div className="cs-frame-controls">
-        <button
-          type="button"
-          className="cs-frame-btn"
-          onClick={togglePlay}
-          aria-label={isPlaying ? "Pause video" : "Play video"}
-        >
-          {isPlaying ? <LuPause size={16} /> : <LuPlay size={16} />}
-        </button>
-        <button
-          type="button"
-          className="cs-frame-btn"
-          onClick={toggleMute}
-          aria-label={isMuted ? "Unmute video" : "Mute video"}
-        >
-          {isMuted ? <LuVolumeX size={16} /> : <LuVolume size={16} />}
-        </button>
-      </div>
-    </div>
-  );
-};
-
 const CafeSrinivasa = ({ name, next }) => {
-  const galleryScope = useRef(null);
+  const pageRef = useRef(null);
+  const [viewer, setViewer] = useState({ open: false, section: 0, index: 0 });
 
   const series = SERIES.filter((item) => item.media.length > 0);
 
-  // Stagger each gallery frame in as it crosses the fold.
+  const openViewer = (section, index) =>
+    setViewer({ open: true, section, index });
+
+  const stepViewer = useCallback(
+    (direction) => {
+      setViewer((current) => {
+        const items = series[current.section]?.media ?? [];
+        if (!items.length) return current;
+        return {
+          ...current,
+          index: (current.index + direction + items.length) % items.length,
+        };
+      });
+    },
+    [series]
+  );
+
+  const closeViewer = useCallback(
+    () => setViewer((current) => ({ ...current, open: false })),
+    []
+  );
+
+  // Frames in a grid chapter rise as they cross the fold. A marquee is
+  // already moving, so it is left alone — animating a tile inside an
+  // animating track only fights it.
   useGSAP(
     () => {
       gsap.utils.toArray(".cs-gallery > .cs-frame").forEach((frame) => {
@@ -259,11 +176,11 @@ const CafeSrinivasa = ({ name, next }) => {
         );
       });
     },
-    { scope: galleryScope, dependencies: [series.length] }
+    { scope: pageRef, dependencies: [series.length] }
   );
 
   return (
-    <div className="sample-project-page cs-case">
+    <div className="sample-project-page case-study cs-case" ref={pageRef}>
       {/* Kept exactly as the shared template renders it. */}
       <section className="project-header">
         <Copy delay={0.75}>
@@ -287,13 +204,11 @@ const CafeSrinivasa = ({ name, next }) => {
 
             <Copy animateOnScroll={true}>
               <h2 className="cs-display cs-brief-title">
-                A kitchen worth
-                <span className="cs-accent"> looking at</span>
+                {"A kitchen worth "}
+                <span className="cs-accent">looking at</span>
               </h2>
             </Copy>
-          </div>
 
-          <div className="cs-brief-body">
             <Copy animateOnScroll={true}>
               <p className="cs-copy">
                 {`Cafe Srinivasa had the food and the following, but not the imagery to match ${EM} plates that landed hot on the table and flat on the feed. We rebuilt the visual language series by series, shooting each part of the menu as its own story instead of one catch-all shoot.`}
@@ -313,94 +228,24 @@ const CafeSrinivasa = ({ name, next }) => {
               ))}
             </div>
           </div>
+
+          {/* The same contents card Cafe Toh carries: every series, numbered,
+              frame-counted and linked to its chapter. */}
+          <ContentsIndex items={SERIES} unit="Series" />
         </div>
       </section>
 
-      {/* -------------------------------------------------- series index */}
-      <section className="cs-toc">
-        <div className="container">
-          <Copy animateOnScroll={true}>
-            <p className="sm cs-index">{`The Series / ${pad(series.length)}`}</p>
-          </Copy>
-
-          <ul className="cs-toc-list">
-            {series.map((item, i) => (
-              <li className="cs-toc-item" key={item.name}>
-                <a href={`#${slugify(item.name)}`}>
-                  <span className="sm cs-index">{pad(i + 1)}</span>
-                  <span className="cs-display cs-toc-name">{item.name}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* ----------------------------------------------------- galleries */}
-      <div ref={galleryScope}>
+      {/* ------------------------------------------------------ chapters */}
+      <div className="cs-chapters">
         {series.map((item, i) => (
-          <section
-            className="cs-series"
-            id={slugify(item.name)}
+          <SeriesSection
             key={item.name}
-          >
-            <div className="container cs-series-inner">
-              <div className="cs-series-head">
-                <Copy animateOnScroll={true}>
-                  <p className="sm cs-index">{`${pad(i + 1)} / Series`}</p>
-                </Copy>
-
-                <Copy animateOnScroll={true}>
-                  <h2 className="cs-display cs-series-title">{item.name}</h2>
-                </Copy>
-
-                {item.copy ? (
-                  <Copy animateOnScroll={true}>
-                    <p className="cs-copy">{item.copy}</p>
-                  </Copy>
-                ) : null}
-              </div>
-
-              {item.marquee ? (
-                // The track holds the set twice over and slides exactly one
-                // set's width before looping, so the seam never shows. CSS
-                // owns the motion — see .cs-marquee in the stylesheet — which
-                // keeps the pause-on-hover a single declaration rather than a
-                // scroll listener.
-                <div
-                  className="cs-marquee"
-                  style={{
-                    "--marquee-duration": `${item.media.length * 7}s`,
-                  }}
-                >
-                  <div className="cs-marquee-track">
-                    {[...item.media, ...item.media].map((src, j) => (
-                      <Frame
-                        key={`${src}-${j}`}
-                        src={src}
-                        label={`${item.name} ${(j % item.media.length) + 1}`}
-                        className="cs-marquee-item"
-                        hidden={j >= item.media.length}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className="cs-gallery"
-                  style={{ "--cols": item.columns ?? 3 }}
-                >
-                  {item.media.map((src, j) => (
-                    <Frame
-                      key={src}
-                      src={src}
-                      label={`${item.name} ${j + 1}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
+            item={item}
+            index={i}
+            dark={i % 2 === 1}
+            label="Series"
+            onOpen={(index) => openViewer(i, index)}
+          />
         ))}
       </div>
 
@@ -458,6 +303,15 @@ const CafeSrinivasa = ({ name, next }) => {
       </section>
 
       <Footer />
+
+      <Lightbox
+        open={viewer.open}
+        items={series[viewer.section]?.media ?? []}
+        index={viewer.index}
+        name={series[viewer.section]?.name ?? name}
+        onClose={closeViewer}
+        onStep={stepViewer}
+      />
     </div>
   );
 };

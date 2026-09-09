@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { LuVolumeX, LuVolume } from "react-icons/lu";
-import { isVideo } from "./media";
+import { isVideo } from "@/components/CaseStudy/media";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
