@@ -77,7 +77,29 @@ const SECTIONS = [
     number: "04",
     name: "Vinyls",
     copy: `The other half of the room, and the reason people stay for a second cup.`,
-    media: [],
+    // Same wider ratio as Textures — this footage reads landscape too.
+    frame: "landscape",
+    marquee: true,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788978442/dbhsq.mov",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788978440/oyi.mov",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788978439/ewvfg.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788978439/piot.mov",
+    ],
+  },
+  {
+    number: "05",
+    name: "Specials",
+    copy: `Off-menu today, gone tomorrow ${EM} the board shot as fast as it turns over.`,
+    marquee: true,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788980212/14._Chole_Kulcha_Waffle.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788980211/13._Drinks.mov",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788980172/7._Sourdough_Sandwiches.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788980168/6._Blueberry_Matcha.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788979088/3._Matcha.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1788979086/4._Sunday_Orders.mp4",
+    ],
   },
 ];
 
