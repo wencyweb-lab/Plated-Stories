@@ -1,0 +1,195 @@
+"use client";
+import "@/components/Showreel/Showreel.css";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { LuVolumeX, LuVolume } from "react-icons/lu";
+import { isVideo } from "@/components/CaseStudy/media";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+// How long each frame holds. A still is a flipbook beat, matching the
+// homepage Showreel's 500ms; a reel needs long enough to read as motion.
+const STILL_MS = 500;
+const VIDEO_MS = 3000;
+
+// The homepage Showreel, driven by this project's own media instead of the
+// /showreel/*.jpg sequence. The pin, the 0.75 -> 1 scale and the 2rem -> 0
+// border-radius are lifted from it unchanged, so the frame behaves exactly
+// as it does on the homepage; only the source of the frames differs.
+//
+// Every item is mounted and stacked, with the active one faded in. Swapping
+// a single element's `src` would flash on each beat, and stacking means the
+// browser has the whole sequence decoded before the frame is pinned.
+const DdShowreel = ({ media = [], label }) => {
+  const sectionRef = useRef(null);
+  const videoRefs = useRef({});
+  const [index, setIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+  const [inView, setInView] = useState(true);
+
+  const current = media[index];
+
+  // Advance the sequence. A timeout per frame rather than one interval, so
+  // stills and reels can hold for different lengths.
+  useEffect(() => {
+    if (media.length < 2 || !inView) return;
+
+    const id = setTimeout(
+      () => setIndex((i) => (i + 1) % media.length),
+      isVideo(media[index]) ? VIDEO_MS : STILL_MS
+    );
+
+    return () => clearTimeout(id);
+  }, [index, media, inView]);
+
+  // Only the frame on screen plays, and only while the section is in view —
+  // this page carries enough reels that letting them all run would decode a
+  // dozen streams at once.
+  useEffect(() => {
+    Object.entries(videoRefs.current).forEach(([src, video]) => {
+      if (!video) return;
+
+      if (src === current && inView) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else if (!video.paused) {
+        video.pause();
+      }
+    });
+  }, [current, inView]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleMute = () => setIsMuted((muted) => !muted);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1000px)", () => {
+        const scrollTrigger = ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top top",
+          end: () => `+=${window.innerHeight * 2}px`,
+          pin: true,
+          pinSpacing: true,
+          onUpdate: (self) => {
+            const progress = self.progress;
+
+            const scaleValue = gsap.utils.mapRange(0, 1, 0.75, 1, progress);
+            const borderRadiusValue =
+              progress <= 0.5 ? gsap.utils.mapRange(0, 0.5, 2, 0, progress) : 0;
+
+            gsap.set(".showreel-container", {
+              scale: scaleValue,
+              borderRadius: `${borderRadiusValue}rem`,
+            });
+          },
+        });
+
+        const refreshHandler = () => ScrollTrigger.refresh();
+
+        window.addEventListener("orientationchange", refreshHandler);
+        window.addEventListener("resize", refreshHandler);
+        window.addEventListener("load", refreshHandler, { passive: true });
+
+        return () => {
+          scrollTrigger.kill();
+          window.removeEventListener("orientationchange", refreshHandler);
+          window.removeEventListener("resize", refreshHandler);
+          window.removeEventListener("load", refreshHandler);
+        };
+      });
+
+      mm.add("(max-width: 999px)", () => {
+        if (sectionRef.current) {
+          gsap.set(sectionRef.current, { clearProps: "all" });
+        }
+        gsap.set(".showreel-container", { clearProps: "all" });
+
+        ScrollTrigger.refresh();
+
+        const refreshHandler = () => ScrollTrigger.refresh();
+
+        window.addEventListener("orientationchange", refreshHandler);
+        window.addEventListener("load", refreshHandler, { passive: true });
+
+        return () => {
+          window.removeEventListener("orientationchange", refreshHandler);
+          window.removeEventListener("load", refreshHandler);
+        };
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef }
+  );
+
+  if (!media.length) return null;
+
+  return (
+    <section className="showreel dd-showreel" ref={sectionRef}>
+      <div className="showreel-container">
+        {media.map((src, i) => (
+          <div
+            className={`dd-showreel-layer${
+              i === index ? " dd-showreel-layer--active" : ""
+            }`}
+            key={src}
+            aria-hidden={i !== index}
+          >
+            {isVideo(src) ? (
+              <video
+                ref={(el) => {
+                  videoRefs.current[src] = el;
+                }}
+                src={src}
+                muted={isMuted}
+                loop
+                playsInline
+                preload="metadata"
+              />
+            ) : (
+              <img src={src} alt={i === index ? label : ""} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div
+        className="volume-icon"
+        onClick={toggleMute}
+        role="button"
+        tabIndex={0}
+        aria-label={isMuted ? "Unmute showreel" : "Mute showreel"}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleMute();
+          }
+        }}
+      >
+        {isMuted ? (
+          <LuVolumeX color="#171412" size={25} />
+        ) : (
+          <LuVolume color="#171412" size={25} />
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default DdShowreel;
