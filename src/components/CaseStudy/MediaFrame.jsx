@@ -10,7 +10,14 @@ import { isVideo } from "./media";
 // The whole tile opens the viewer when `onOpen` is given. The control
 // buttons sit inside it, so they stop the click from bubbling — pausing a
 // reel in place should not also throw it full-screen.
-const MediaFrame = ({ src, label, className = "", hidden = false, onOpen }) => {
+const MediaFrame = ({
+  src,
+  label,
+  className = "",
+  hidden = false,
+  onOpen,
+  landscape = false,
+}) => {
   const videoRef = useRef(null);
   const userPausedRef = useRef(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -50,6 +57,7 @@ const MediaFrame = ({ src, label, className = "", hidden = false, onOpen }) => {
   // the "View" cue hang off this rather than off the ARIA role, which the
   // clones deliberately do not carry.
   const openClass = clickable ? " cs-frame--open" : "";
+  const landscapeClass = landscape ? " cs-frame--landscape" : "";
 
   const openProps = clickable
     ? {
@@ -73,7 +81,7 @@ const MediaFrame = ({ src, label, className = "", hidden = false, onOpen }) => {
   if (!isVideo(src)) {
     return (
       <div
-        className={`cs-frame${openClass} ${className}`.trim()}
+        className={`cs-frame${openClass}${landscapeClass} ${className}`.trim()}
         aria-hidden={hidden}
         {...openProps}
       >
@@ -106,7 +114,7 @@ const MediaFrame = ({ src, label, className = "", hidden = false, onOpen }) => {
 
   return (
     <div
-      className={`cs-frame cs-frame--video${openClass} ${className}`.trim()}
+      className={`cs-frame cs-frame--video${openClass}${landscapeClass} ${className}`.trim()}
       tabIndex={hidden ? -1 : 0}
       aria-hidden={hidden}
       {...openProps}

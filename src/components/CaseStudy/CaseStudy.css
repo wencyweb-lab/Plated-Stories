@@ -247,6 +247,14 @@
   aspect-ratio: 16 / 10;
 }
 
+/* A single tile can also read wide on its own — one landscape reel mixed
+   into an otherwise vertical set — without switching the whole section. */
+.case-study .cs-frame--landscape img,
+.case-study .cs-frame--landscape video,
+.case-study .cs-frame--landscape.cs-frame--video {
+  aspect-ratio: 16 / 10;
+}
+
 .case-study .cs-frame:focus-visible {
   outline: 2px solid var(--cs-accent);
   outline-offset: 2px;

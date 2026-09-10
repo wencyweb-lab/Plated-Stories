@@ -1,14 +1,17 @@
-import ProjectPage from "@/components/ProjectPage/ProjectPage";
+import HiveCafe from "./HiveCafe";
 import { workCategories } from "@/app/work/workCategories.js";
 
-const project = workCategories
-  .find((c) => c.key === "food-beverages")
-  .projects.find((p) => p.slug === "hive-cafe");
+// Like Cafe Toh, this project has diverged from the shared ProjectPage
+// template and owns its layout (HiveCafe.jsx + hive-cafe.css).
+const category = workCategories.find((c) => c.key === "food-beverages");
+const projectIndex = category.projects.findIndex(
+  (p) => p.slug === "hive-cafe"
+);
+const project = category.projects[projectIndex];
+const next = category.projects[projectIndex + 1] ?? null;
 
 export const metadata = { title: `${project.name} — Plated Stories` };
 
-const Page = () => (
-  <ProjectPage name={project.name} images={project.images} />
-);
+const Page = () => <HiveCafe name={project.name} next={next} />;
 
 export default Page;

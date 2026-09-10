@@ -13,6 +13,9 @@ import { pad, slugify } from "./media";
 //   grid     — a column layout at the series' own `columns` count
 const SeriesSection = ({ item, index, dark, label = "Series", onOpen }) => {
   const landscape = item.frame === "landscape";
+  // A section can also mark specific items as landscape rather than the
+  // whole set — one wide reel mixed among otherwise vertical ones.
+  const isItemLandscape = (src) => Boolean(item.landscapeMedia?.includes(src));
 
   return (
     <section
@@ -57,6 +60,7 @@ const SeriesSection = ({ item, index, dark, label = "Series", onOpen }) => {
                     className="cs-marquee-item"
                     hidden={j >= item.media.length}
                     onOpen={onOpen ? () => onOpen(source) : undefined}
+                    landscape={isItemLandscape(src)}
                   />
                 );
               })}
@@ -73,6 +77,7 @@ const SeriesSection = ({ item, index, dark, label = "Series", onOpen }) => {
                 src={src}
                 label={`${item.name} ${j + 1}`}
                 onOpen={onOpen ? () => onOpen(j) : undefined}
+                landscape={isItemLandscape(src)}
               />
             ))}
           </div>
