@@ -344,6 +344,14 @@
 
 /* -------------------------------------------------------------- marquee */
 
+/* A section split across several marquee rows (see `marqueeRows`) stacks
+   them with the same rhythm as a grid's row gap. */
+.case-study .cs-marquee-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-gap);
+}
+
 /* A series can run as an endless single-line strip instead of a grid.
    Four tiles are visible at a time; the track carries the set twice and
    travels exactly one set's width, so the loop is seamless. Sizing is in
@@ -382,6 +390,13 @@
   width: max-content;
   gap: var(--marquee-gap);
   animation: cs-marquee-scroll var(--marquee-duration, 30s) linear infinite;
+}
+
+/* A row can run the opposite way from the one above it — same loop, played
+   back to front, so a two-row set reads as two currents rather than one
+   strip repeated. */
+.case-study .cs-marquee--reverse .cs-marquee-track {
+  animation-direction: reverse;
 }
 
 .case-study .cs-marquee .cs-frame {

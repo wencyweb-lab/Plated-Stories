@@ -37,7 +37,42 @@ const SECTIONS = [
     number: "01",
     name: "Delightful Delicacies",
     copy: `Small-batch bakes shot the way they're actually sold ${EM} one home kitchen, one box at a time.`,
-    media: [],
+    marquee: true,
+    // Two strips instead of one, running opposite ways.
+    marqueeRows: 2,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114078/1._Hamper.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114071/1._DIY.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114064/2._Cake_Canvas.mp4",
+      // Source exports are HEIC — swapped to .jpg so Cloudinary re-encodes
+      // them, since browsers can't render HEIC in an <img>.
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/bdshc.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114059/evgbjwhk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114059/vycgxjbhns.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/vghbxjk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/gfecbwhdjkcdw.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114057/vfdwbjk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114057/vecwbjhkn.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114057/jbfvhbfve.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114057/hddc.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114057/cyfewdjbhkc.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114056/beyvhbyef.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114056/fvtdcwbhn.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114055/vedbwhknxj.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114056/vfygdbwjh_sx.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114055/fvcgdbhnkj.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114055/evygbxhjwns.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/e_rhgwjxk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/gfvedhwjxkj.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/vgehbjx.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/df_vhgs_k.jpg",
+      // This one HEIC is grid-tiled — a plain extension swap fails to
+      // re-encode it (Cloudinary error: "Cannot read grid descriptor"), so
+      // it needs the f_auto transform instead, kept on its original .heic
+      // path.
+      "https://res.cloudinary.com/vaxfpcja/image/upload/f_auto/v1789114054/vyegwbjxhnkj.heic",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/hvegwbjnk.jpg",
+    ],
   },
   {
     number: "02",
