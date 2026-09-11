@@ -70,7 +70,14 @@ const SECTIONS = [
     number: "03",
     name: "Therapy",
     copy: `The slow half of the cafe ${EM} the reason people linger over a second order.`,
-    media: [],
+    marquee: true,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_2_1.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_3_1.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_4_1.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111826/Copy_of_Hive_Carousels_-_5_1.png",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_6_1.png",
+    ],
   },
 ];
 
