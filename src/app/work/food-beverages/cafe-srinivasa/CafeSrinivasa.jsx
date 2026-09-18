@@ -44,7 +44,6 @@ const SERIES = [
     copy: `The dishes people come back for ${EM} bisi bele bath, benne dosa, idli, dal vada and the full thali, each shot at the moment it leaves the kitchen.`,
     media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/1_1.png",
-      "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/2_1.png",
       "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378603/6._Cult_Favourite.mp4",
       "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378600/7._Idli_Making.mp4",
       "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378596/2._Dal_Vada.mp4",
