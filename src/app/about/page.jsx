@@ -1,4 +1,5 @@
 "use client";
+
 import "./studio.css";
 import TeamCards from "@/components/TeamCards/TeamCards";
 import Spotlight from "@/components/Spotlight/Spotlight";
