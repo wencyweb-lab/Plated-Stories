@@ -13,27 +13,27 @@ CustomEase.create("heroFlow", "0.76, 0, 0.24, 1");
 
 const HERO_SEQUENCES = [
   [
-    "/loader/loader-2.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/3.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378603/6._Cult_Favourite.mp4",
-    "/loader/loader-14.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/as.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413984/eyi.mp4",
-    "/loader/loader-26.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/cghbjh.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114078/1._Hamper.mp4",
   ],
   [
     "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/1_1.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021541/1._Conners_of_hive.mp4",
-    "/loader/loader-13.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982239/grd.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1788365967/1._Monsoon_Vibe.mp4",
-    "/loader/loader-25.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114059/evgbjwhk.jpg",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378571/8._Benne_Dosa.mp4",
   ],
   [
-    "/loader/loader-8.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/4.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413980/eiruo.mp4",
-    "/loader/loader-20.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/er.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021540/2._Serving_Now.mov",
-    "/loader/loader-32.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/vghbxjk.jpg",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114071/1._DIY.mp4",
   ],
 ];

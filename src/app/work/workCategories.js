@@ -1,14 +1,34 @@
 // The three niches we shoot for, and the client projects under each.
 // Mirrors the "Plated Stories - Portfolio" Drive structure.
 //
-// NOTE ON IMAGERY: the previews below are placeholders drawn from /public/loader
-// (real studio photography, but all from the Love & Flour By Pooja shoot). Each
-// project should get its own three stills once the media from its Drive folder
-// is exported into /public. Only `images` needs swapping — nothing else.
-const previews = (start) => [
-  `/loader/loader-${start}.jpg`,
-  `/loader/loader-${start + 1}.jpg`,
-  `/loader/loader-${start + 2}.jpg`,
+// NOTE ON IMAGERY: `previews` used to point at /public/loader/loader-N.jpg,
+// placeholders that were never actually added to /public — every folder
+// preview on /work 404'd. Projects with their own case-study page (Cafe
+// Srinivasa, Cafe Toh, Hive Cafe, Home Bakers, Dine & Discover) now get three
+// real stills pulled straight from that page's own media. Everything else
+// (no case-study media exported yet) falls back to a rotating slice of the
+// shared Cloudinary studio pool, so a project only needs `images` swapped
+// for its own stills once its Drive folder is exported.
+const STUDIO_POOL = [
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/4.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/2.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/5.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/as.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/er.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/2d.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/cghbjh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/xfgcfhgh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/sdg.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982239/grd.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982240/gdh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/vghbxjk.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/gfecbwhdjkcdw.jpg",
+];
+
+const previews = (offset) => [
+  STUDIO_POOL[offset % STUDIO_POOL.length],
+  STUDIO_POOL[(offset + 1) % STUDIO_POOL.length],
+  STUDIO_POOL[(offset + 2) % STUDIO_POOL.length],
 ];
 
 // Turns a project name into its URL slug, e.g. "Dine & Discover" ->
@@ -36,11 +56,46 @@ const categoriesData = [
         heroVideo:
           "https://res.cloudinary.com/vaxfpcja/video/upload/v1788365967/1._Monsoon_Vibe.mp4",
       },
-      { name: "Cafe Srinivasa", images: previews(4) },
-      { name: "Cafe Toh", images: previews(7) },
-      { name: "Dine & Discover", images: previews(10) },
-      { name: "Hive Cafe", images: previews(13) },
-      { name: "Home Bakers", images: previews(16) },
+      {
+        name: "Cafe Srinivasa",
+        images: [
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/1_1.png",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1789768231/2_1.jpg",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/3.png",
+        ],
+      },
+      {
+        name: "Cafe Toh",
+        images: [
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380469/vewcbj.png",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380469/hebdcks.png",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380468/vehbkj.png",
+        ],
+      },
+      {
+        name: "Dine & Discover",
+        images: [
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/gjhv.png",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/fdxgch.png",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/hg.png",
+        ],
+      },
+      {
+        name: "Hive Cafe",
+        images: [
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_2_1.png",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_3_1.png",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_4_1.png",
+        ],
+      },
+      {
+        name: "Home Bakers",
+        images: [
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/bdshc.jpg",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114059/evgbjwhk.jpg",
+          "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114059/vycgxjbhns.jpg",
+        ],
+      },
       { name: "Love & Flour", images: previews(19) },
       { name: "Maison Faux", images: previews(22) },
     ],
