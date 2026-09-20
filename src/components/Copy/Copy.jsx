@@ -24,11 +24,16 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
         "PP Pangram Sans",
         "DM Sans",
       ];
-      const fontCheckPromises = customFonts.map((fontFamily) => {
-        return document.fonts.check(`16px ${fontFamily}`);
-      });
+      // `document.fonts.check()` returns a plain boolean, not a promise —
+      // wrapping it in Promise.all didn't actually wait for anything, so
+      // SplitText could still run against fallback-font metrics.
+      // `document.fonts.load()` triggers the load (if needed) and returns a
+      // promise that resolves once that family is actually available.
+      const fontLoadPromises = customFonts.map((fontFamily) =>
+        document.fonts.load(`16px "${fontFamily}"`).catch(() => {})
+      );
 
-      await Promise.all(fontCheckPromises);
+      await Promise.all(fontLoadPromises);
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       return true;
