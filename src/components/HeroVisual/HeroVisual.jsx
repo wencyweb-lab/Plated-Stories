@@ -21,7 +21,7 @@ const HERO_SEQUENCES = [
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114078/1._Hamper.mp4",
   ],
   [
-    "/loader/loader-1.jpg",
+    "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/1_1.png",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021541/1._Conners_of_hive.mp4",
     "/loader/loader-13.jpg",
     "https://res.cloudinary.com/vaxfpcja/video/upload/v1788365967/1._Monsoon_Vibe.mp4",

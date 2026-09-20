@@ -13,15 +13,41 @@ CustomEase.create("hop", "0.9, 0, 0.1, 1");
 export let isInitialLoad = true;
 
 // Pool the slot-machine shuffle draws from — the studio's own gallery.
-const allImageSources = Array.from(
-  { length: 82 },
-  (_, i) => `/loader/loader-${i + 1}.jpg`
-);
+const allImageSources = [
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374078/1_1.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789768231/2_1.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/3.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/4.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/2.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/5.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/as.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/er.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/2d.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380469/vewcbj.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380469/hebdcks.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380468/vehbkj.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380468/wiuer.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/cghbjh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/xfgcfhgh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/gjhv.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/fdxgch.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/hg.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/sdg.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982239/grd.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982240/gdh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/bdshc.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114059/evgbjwhk.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114059/vycgxjbhns.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/vghbxjk.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/gfecbwhdjkcdw.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114057/vfdwbjk.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789111825/Copy_of_Hive_Carousels_-_2_1.png",
+];
 
 // The tile that survives the shuffle and zooms in to hand off to the hero.
 const HERO_IMG = allImageSources[0];
 const animationImageSources = allImageSources
-  .slice(1, 28)
+  .slice(1)
   .map((src) => optimizeImageUrl(src, 640));
 const optimizedHeroImage = optimizeImageUrl(HERO_IMG, 1920);
 
