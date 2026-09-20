@@ -94,6 +94,9 @@ export default function TeamCards() {
           end: () => `+=${stickyHeight}px`,
           pin: true,
           pinSpacing: true,
+          // Pins refresh in document order — a pin above this one changes
+          // where this one starts, so it has to be measured first.
+          refreshPriority: 2,
           onUpdate: (self) => {
             const progress = self.progress;
 
@@ -158,18 +161,9 @@ export default function TeamCards() {
         const onRefreshInit = () => measure();
         ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
 
-        const handleResize = () => {
-          measure();
-          ScrollTrigger.refresh();
-        };
-        window.addEventListener("resize", handleResize, { passive: true });
-
-        ScrollTrigger.refresh();
-
         return () => {
           if (scrollTriggerInstance) scrollTriggerInstance.kill();
           ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
-          window.removeEventListener("resize", handleResize);
         };
       });
 
@@ -181,21 +175,6 @@ export default function TeamCards() {
         cardsRef.current.forEach((card) => {
           if (card) gsap.set(card, { clearProps: "all", opacity: 1 });
         });
-
-        ScrollTrigger.refresh();
-
-        const refreshHandler = () => {
-          ScrollTrigger.refresh();
-        };
-
-        window.addEventListener("orientationchange", refreshHandler);
-        const onLoad = () => ScrollTrigger.refresh();
-        window.addEventListener("load", onLoad, { passive: true });
-
-        return () => {
-          window.removeEventListener("orientationchange", refreshHandler);
-          window.removeEventListener("load", onLoad);
-        };
       });
 
       return () => {

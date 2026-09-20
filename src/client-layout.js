@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { ReactLenis } from "lenis/react";
 import Menu from "@/components/Menu/Menu";
+import ScrollSync from "@/components/ScrollSync/ScrollSync";
 import {
   READY_EVENT,
   PROGRESS_EVENT,
@@ -232,6 +233,9 @@ export default function ClientLayout({ children }) {
         orientation: "vertical",
         smoothWheel: true,
         syncTouch: true,
+        // ScrollSync drives lenis.raf from the GSAP ticker instead, so the two
+        // never advance on separate frames.
+        autoRaf: false,
       }
     : {
         duration: 1.2,
@@ -247,10 +251,15 @@ export default function ClientLayout({ children }) {
         orientation: "vertical",
         smoothWheel: true,
         syncTouch: true,
+        // ScrollSync drives lenis.raf from the GSAP ticker instead, so the two
+        // never advance on separate frames.
+        autoRaf: false,
       };
 
   return (
     <ReactLenis root options={scrollSettings}>
+      <ScrollSync />
+
       <Menu />
 
       <div className="page" ref={pageRef}>

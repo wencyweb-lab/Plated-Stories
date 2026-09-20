@@ -13,27 +13,9 @@ import Footer from "@/components/Footer/Footer";
 import Copy from "@/components/Copy/Copy";
 import HeroVisual from "@/components/HeroVisual/HeroVisual";
 import Preloader, { isInitialLoad } from "@/components/Preloader/Preloader";
-import React, { useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import React from "react";
 
 const Page = () => {
-  useEffect(() => {
-    const rafId = requestAnimationFrame(() => {
-      ScrollTrigger.refresh(true);
-    });
-
-    const onLoad = () => ScrollTrigger.refresh(true);
-    window.addEventListener("load", onLoad, { passive: true });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("load", onLoad);
-    };
-  }, []);
-
   return (
     <>
       <Preloader />

@@ -132,6 +132,9 @@ const Showreel = () => {
           end: () => `+=${window.innerHeight * 2}px`,
           pin: true,
           pinSpacing: true,
+          // Pins refresh in document order — a pin above this one changes
+          // where this one starts, so it has to be measured first.
+          refreshPriority: 3,
           onUpdate: (self) => {
             const progress = self.progress;
 
@@ -150,22 +153,8 @@ const Showreel = () => {
           scrollTriggerInstances.push(scrollTrigger);
         }
 
-        const refreshHandler = () => {
-          ScrollTrigger.refresh();
-        };
-
-        window.addEventListener("orientationchange", refreshHandler);
-        window.addEventListener("resize", refreshHandler);
-
-        const onLoad = () => ScrollTrigger.refresh();
-        window.addEventListener("load", onLoad, { passive: true });
-
         return () => {
           scrollTriggerInstances.forEach((trigger) => trigger.kill());
-
-          window.removeEventListener("orientationchange", refreshHandler);
-          window.removeEventListener("resize", refreshHandler);
-          window.removeEventListener("load", onLoad);
         };
       });
 
@@ -175,21 +164,6 @@ const Showreel = () => {
           gsap.set(showreelSection, { clearProps: "all" });
         }
         gsap.set(container, { clearProps: "all" });
-
-        ScrollTrigger.refresh();
-
-        const refreshHandler = () => {
-          ScrollTrigger.refresh();
-        };
-
-        window.addEventListener("orientationchange", refreshHandler);
-        const onLoad = () => ScrollTrigger.refresh();
-        window.addEventListener("load", onLoad, { passive: true });
-
-        return () => {
-          window.removeEventListener("orientationchange", refreshHandler);
-          window.removeEventListener("load", onLoad);
-        };
       });
 
       return () => {

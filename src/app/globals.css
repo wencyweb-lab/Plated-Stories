@@ -13,10 +13,23 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* `100vw` counts the classic scrollbar's width, so any element sized that way
+   is wider than the space it actually has. The overflow used to be swept under
+   `overflow-x: hidden` on the body alone, which hides the scrollbar but not the
+   mis-measurement: a pin-spacer built while that overflow existed caches the
+   wrong width and leaves a scrollbar-wide strip of body background down the
+   right of the pinned section. Nothing is sized in `vw` any more; this pair
+   keeps the horizontal axis honest rather than hiding it. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
   background-color: var(--base-400);
   color: var(--base-400);
-  overflow-x: hidden;
 }
 
 h1,

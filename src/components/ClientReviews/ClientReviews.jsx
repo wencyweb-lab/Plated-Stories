@@ -58,6 +58,9 @@ const ClientReviews = () => {
             end: () => `+=${(cards.length - 1) * window.innerHeight}`,
             pin: true,
             pinSpacing: true,
+            // Pins refresh in document order — a pin above this one changes
+            // where this one starts, so it has to be measured first.
+            refreshPriority: 1,
             scrub: 1,
             anticipatePin: 1,
             invalidateOnRefresh: true,

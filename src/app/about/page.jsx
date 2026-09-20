@@ -5,29 +5,11 @@ import TeamCards from "@/components/TeamCards/TeamCards";
 import Spotlight from "@/components/Spotlight/Spotlight";
 import CTACard from "@/components/CTACard/CTACard";
 import Footer from "@/components/Footer/Footer";
-import React, { useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React from "react";
 import { optimizeImageUrl } from "@/lib/media-delivery";
 import Copy from "@/components/Copy/Copy";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const Page = () => {
-  useEffect(() => {
-    const rafId = requestAnimationFrame(() => {
-      ScrollTrigger.refresh(true);
-    });
-
-    const onLoad = () => ScrollTrigger.refresh(true);
-    window.addEventListener("load", onLoad, { passive: true });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("load", onLoad);
-    };
-  }, []);
-
   return (
     <div className="studio-page">
       <section className="studio-header">

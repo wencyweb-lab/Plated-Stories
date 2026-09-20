@@ -3,7 +3,10 @@ import "./Spotlight.css";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+// Deliberately the same specifier every other component uses: "gsap/dist/..."
+// resolves to the UMD build, which is a second, separate ScrollTrigger with
+// its own trigger registry and its own idea of the scroll position.
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 import { isVideo } from "@/components/CaseStudy/media";
 import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
@@ -104,23 +107,13 @@ const Spotlight = () => {
             }
           });
 
-        ScrollTrigger.refresh();
       };
 
-      const waitForOtherTriggers = () => {
-        const existingTriggers = ScrollTrigger.getAll();
-        const hasPinnedTrigger = existingTriggers.some(
-          (trigger) => trigger.vars && trigger.vars.pin
-        );
-
-        if (hasPinnedTrigger || existingTriggers.length > 0) {
-          setTimeout(initSpotlight, 300);
-        } else {
-          initSpotlight();
-        }
-      };
-
-      setTimeout(waitForOtherTriggers, 100);
+      // Created synchronously with everything else. The old version deferred
+      // this behind timers to "wait for" the pinned sections above it, which
+      // only guaranteed these triggers were measured against a layout the pins
+      // had already changed.
+      initSpotlight();
 
       return () => {
         scrollTriggerInstances.forEach((trigger) => trigger.kill());
