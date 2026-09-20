@@ -85,7 +85,7 @@ const SeriesSection = ({ item, index, dark, label = "Series", onOpen }) => {
           // keeps pause-on-hover a single declaration rather than a scroll
           // listener.
           <div className="cs-marquee-rows">
-            {splitRows(item.media, marqueeRows).map((row, rowIndex) => (
+            {splitRows(item.media, marqueeRows, item.marqueeSplit).map((row, rowIndex) => (
               <MarqueeRow
                 key={rowIndex}
                 items={row.items}
