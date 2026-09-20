@@ -25,6 +25,7 @@ const VIDEO_MS = 3000;
 // browser has the whole sequence decoded before the frame is pinned.
 const CsShowreel = ({ media = [], label }) => {
   const sectionRef = useRef(null);
+  const containerRef = useRef(null);
   const videoRefs = useRef({});
   const [index, setIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
@@ -78,11 +79,15 @@ const CsShowreel = ({ media = [], label }) => {
 
   useGSAP(
     () => {
+      const section = sectionRef.current;
+      const container = containerRef.current;
+      if (!section || !container || !media.length) return;
+
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1000px)", () => {
         const scrollTrigger = ScrollTrigger.create({
-          trigger: sectionRef.current,
+          trigger: section,
           start: "top top",
           end: () => `+=${window.innerHeight * 2}px`,
           pin: true,
@@ -94,7 +99,7 @@ const CsShowreel = ({ media = [], label }) => {
             const borderRadiusValue =
               progress <= 0.5 ? gsap.utils.mapRange(0, 0.5, 2, 0, progress) : 0;
 
-            gsap.set(".showreel-container", {
+            gsap.set(container, {
               scale: scaleValue,
               borderRadius: `${borderRadiusValue}rem`,
             });
@@ -119,7 +124,7 @@ const CsShowreel = ({ media = [], label }) => {
         if (sectionRef.current) {
           gsap.set(sectionRef.current, { clearProps: "all" });
         }
-        gsap.set(".showreel-container", { clearProps: "all" });
+        gsap.set(container, { clearProps: "all" });
 
         ScrollTrigger.refresh();
 
@@ -136,14 +141,14 @@ const CsShowreel = ({ media = [], label }) => {
 
       return () => mm.revert();
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [media.length] }
   );
 
   if (!media.length) return null;
 
   return (
     <section className="showreel cs-showreel" ref={sectionRef}>
-      <div className="showreel-container">
+      <div className="showreel-container" ref={containerRef}>
         {media.map((src, i) => {
           const shouldPrime = i === index || i === (index + 1) % media.length;
           return (

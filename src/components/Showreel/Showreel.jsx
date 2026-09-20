@@ -48,6 +48,7 @@ const VIDEO_MS = 4000;
 
 const Showreel = () => {
   const showreelSecRef = useRef(null);
+  const containerRef = useRef(null);
   const audioRef = useRef(null);
   const videoRefs = useRef({});
   const [currentFrame, setCurrentFrame] = useState(0);
@@ -112,6 +113,10 @@ const Showreel = () => {
 
   useGSAP(
     () => {
+      const section = showreelSecRef.current;
+      const container = containerRef.current;
+      if (!section || !container) return;
+
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1000px)", () => {
@@ -122,7 +127,7 @@ const Showreel = () => {
         }
 
         const scrollTrigger = ScrollTrigger.create({
-          trigger: showreelSecRef.current,
+          trigger: section,
           start: "top top",
           end: () => `+=${window.innerHeight * 2}px`,
           pin: true,
@@ -134,7 +139,7 @@ const Showreel = () => {
             const borderRadiusValue =
               progress <= 0.5 ? gsap.utils.mapRange(0, 0.5, 2, 0, progress) : 0;
 
-            gsap.set(".showreel-container", {
+            gsap.set(container, {
               scale: scaleValue,
               borderRadius: `${borderRadiusValue}rem`,
             });
@@ -169,7 +174,7 @@ const Showreel = () => {
         if (showreelSection) {
           gsap.set(showreelSection, { clearProps: "all" });
         }
-        gsap.set(".showreel-container", { clearProps: "all" });
+        gsap.set(container, { clearProps: "all" });
 
         ScrollTrigger.refresh();
 
@@ -196,7 +201,7 @@ const Showreel = () => {
 
   return (
     <section className="showreel" ref={showreelSecRef}>
-      <div className="showreel-container">
+      <div className="showreel-container" ref={containerRef}>
         {PROJECT_SHOWREEL_MEDIA.map((src, i) => {
           const shouldPrime = i === currentFrame || i === nextFrame;
 
