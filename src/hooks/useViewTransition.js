@@ -1,6 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
+import {
+  READY_EVENT,
+  PROGRESS_EVENT,
+  READY_STATE_KEY,
+  normalizePath,
+} from "@/lib/page-ready";
 
 // The page transition is driven entirely by the GSAP overlay below — we do NOT
 // use the browser's View Transition API here. Layering the two (this timeline
@@ -19,29 +25,70 @@ import { gsap } from "gsap";
 let activeTimeline = null;
 let transitionInProgress = false;
 
-// How long we'll wait for the destination page to announce it's ready (see
-// the "page-transition:ready" dispatch in client-layout.js) before revealing
-// anyway — a slow asset or a page that never signals shouldn't leave the
-// overlay stuck on screen forever.
-const READY_TIMEOUT_MS = 4000;
+// The overlay's hold is driven by the destination route's real readiness (the
+// "page-transition:ready" dispatch in client-layout.js), so a transition lasts
+// as long as the page actually takes. These only bound that wait.
+//
+// Base deadline for a route that never reports in at all. Every progress tick
+// pushes it out — a page that is still pulling assets is making progress and
+// shouldn't be abandoned — up to the hard ceiling.
+const READY_TIMEOUT_MS = 6000;
+const PROGRESS_GRACE_MS = 3000;
+const MAX_READY_WAIT_MS = 15000;
 // Floor so the cover-to-reveal handoff doesn't read as a flash/stutter on
 // routes that resolve almost instantly (e.g. already-cached pages).
 const MIN_COVER_HOLD_MS = 250;
 
-function waitForPageReady() {
+// Holds until the destination route says it's presentable. Resolves early if
+// that route already reported ready (a cached page can beat this listener),
+// and extends its own deadline while asset progress is still coming in.
+function waitForPageReady(href) {
+  const target = normalizePath((href || "").split("#")[0].split("?")[0]);
+
   const readyPromise = new Promise((resolve) => {
     let settled = false;
+    let deadline = null;
+
     const finish = () => {
       if (settled) return;
       settled = true;
-      window.removeEventListener("page-transition:ready", onReady);
-      clearTimeout(timer);
+      window.removeEventListener(READY_EVENT, onReady);
+      window.removeEventListener(PROGRESS_EVENT, onProgress);
+      clearTimeout(deadline);
       resolve();
     };
-    const onReady = () => finish();
-    window.addEventListener("page-transition:ready", onReady);
-    const timer = setTimeout(finish, READY_TIMEOUT_MS);
+
+    const startedAt = Date.now();
+    const armDeadline = (ms) => {
+      clearTimeout(deadline);
+      const remaining = Math.max(
+        0,
+        Math.min(ms, startedAt + MAX_READY_WAIT_MS - Date.now())
+      );
+      deadline = setTimeout(finish, remaining);
+    };
+
+    // A ready/progress event from the route we left (or from a route we
+    // didn't ask for) says nothing about where we're going.
+    const isTarget = (event) =>
+      !event?.detail?.pathname || event.detail.pathname === target;
+
+    const onReady = (event) => {
+      if (isTarget(event)) finish();
+    };
+    const onProgress = (event) => {
+      if (isTarget(event)) armDeadline(PROGRESS_GRACE_MS);
+    };
+
+    window.addEventListener(READY_EVENT, onReady);
+    window.addEventListener(PROGRESS_EVENT, onProgress);
+    armDeadline(READY_TIMEOUT_MS);
+
+    // Already ready before we started listening.
+    const recorded = window[READY_STATE_KEY];
+    if (recorded && recorded.pathname === target) finish();
   });
+
   const minHold = new Promise((resolve) => setTimeout(resolve, MIN_COVER_HOLD_MS));
   return Promise.all([readyPromise, minHold]);
 }
@@ -84,6 +131,20 @@ export const useViewTransition = () => {
 
     transitionInProgress = true;
 
+    // Start pulling the destination route immediately, while the cover is
+    // still drawing. Prefetch (rather than pushing early) warms the payload
+    // without swapping the DOM out from under the half-drawn overlay, so the
+    // ~0.85s of cover animation is spent loading instead of idling.
+    try {
+      router.prefetch(href);
+    } catch {
+      // Prefetch is an optimisation only; a failure here just means the push
+      // below does all the fetching.
+    }
+
+    // Any readiness recorded for an earlier navigation is stale now.
+    delete window[READY_STATE_KEY];
+
     const paths = {
       step1: {
         unfilled: "M 0 100 V 100 C 18 100 32 100 50 100 C 68 100 82 100 100 100 V 100 H 0 Z",
@@ -125,7 +186,7 @@ export const useViewTransition = () => {
       // Hold here for real: driven by the destination page actually being
       // mounted with its images/video loaded (see client-layout.js), not a
       // fixed guess — so the reveal never uncovers a still-loading page.
-      await waitForPageReady();
+      await waitForPageReady(href);
 
       // Reveal: short pickup, then a long power3 settle off the top edge.
       await new Promise((resolve) => {

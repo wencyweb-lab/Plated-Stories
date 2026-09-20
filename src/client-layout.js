@@ -3,6 +3,21 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { ReactLenis } from "lenis/react";
 import Menu from "@/components/Menu/Menu";
+import {
+  READY_EVENT,
+  PROGRESS_EVENT,
+  READY_STATE_KEY,
+  normalizePath,
+} from "@/lib/page-ready";
+
+// Media that never settles (a 404'd image, a video the browser refuses to
+// buffer) shouldn't hold the overlay hostage — each asset gets its own budget,
+// and the whole readiness check gets an outer one.
+const PER_ASSET_TIMEOUT_MS = 4000;
+const READINESS_TIMEOUT_MS = 12000;
+// Assets this far outside the viewport aren't what the visitor lands on, so
+// they don't gate the reveal. Roughly a quarter-screen of margin either side.
+const VIEWPORT_MARGIN = 0.25;
 
 export default function ClientLayout({ children }) {
   const pageRef = useRef();
@@ -23,53 +38,182 @@ export default function ClientLayout({ children }) {
   }, []);
 
   // Lets the page-transition overlay (useViewTransition) know when the route
-  // we just navigated to has actually mounted AND its images/video have
-  // loaded, so the reveal is driven by real readiness instead of a fixed
-  // guess. Fires on every pathname change, including the first render — that
-  // dispatch is harmless since no transition is listening yet at that point.
+  // we just navigated to is genuinely presentable: mounted, fonts resolved,
+  // and every above-the-fold image/video loaded AND decoded. The overlay holds
+  // until this fires, so a transition lasts as long as the page actually takes
+  // — a cached route reveals almost immediately, a heavy case study holds
+  // longer — instead of running on a fixed duration.
+  //
+  // Fires on every pathname change including the first render; that first
+  // dispatch is harmless since no transition is listening yet.
   useEffect(() => {
     let cancelled = false;
-    let rafId2 = null;
+    const timers = new Set();
+    const frames = new Set();
+    const detachers = new Set();
 
-    const notifyReady = () => {
-      if (!cancelled) window.dispatchEvent(new Event("page-transition:ready"));
+    const startedAt =
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+
+    const nextFrame = (fn) => {
+      const id = requestAnimationFrame((t) => {
+        frames.delete(id);
+        fn(t);
+      });
+      frames.add(id);
     };
 
-    // Wait a couple of frames so the new route's DOM has actually painted
-    // before we go looking for its media.
-    const rafId1 = requestAnimationFrame(() => {
-      rafId2 = requestAnimationFrame(() => {
-        if (cancelled) return;
+    const delay = (ms) =>
+      new Promise((resolve) => {
+        const id = setTimeout(() => {
+          timers.delete(id);
+          resolve();
+        }, ms);
+        timers.add(id);
+      });
 
-        const container = pageRef.current || document;
-        const media = Array.from(container.querySelectorAll("img, video"));
-        const pending = media.filter((el) =>
-          el.tagName === "IMG" ? !el.complete : el.readyState < 3
-        );
+    const notifyProgress = (loaded, total) => {
+      if (cancelled) return;
+      window.dispatchEvent(
+        new CustomEvent(PROGRESS_EVENT, {
+          detail: { pathname: normalizePath(pathname), loaded, total },
+        })
+      );
+    };
 
-        if (pending.length === 0) {
-          notifyReady();
+    const notifyReady = () => {
+      if (cancelled) return;
+      const now =
+        typeof performance !== "undefined" ? performance.now() : Date.now();
+      const detail = {
+        pathname: normalizePath(pathname),
+        duration: now - startedAt,
+        at: now,
+      };
+      // Recorded as well as dispatched, so a listener that attaches after the
+      // fact can see it already happened rather than waiting for a repeat.
+      window[READY_STATE_KEY] = detail;
+      window.dispatchEvent(new CustomEvent(READY_EVENT, { detail }));
+    };
+
+    // Two frames so the new route's DOM has actually laid out — element
+    // positions are what decide which media counts as above the fold.
+    const painted = new Promise((resolve) => {
+      nextFrame(() => nextFrame(resolve));
+    });
+
+    // An image that has loaded but not decoded still paints as a blank box on
+    // the frame the overlay lifts, so decoding is part of being ready.
+    const settleImage = (img) =>
+      new Promise((resolve) => {
+        const done = () => resolve();
+        if (img.complete && img.naturalWidth > 0) {
+          if (typeof img.decode === "function") {
+            img.decode().then(done, done);
+          } else {
+            done();
+          }
           return;
         }
-
-        let remaining = pending.length;
-        const onSettle = () => {
-          remaining -= 1;
-          if (remaining <= 0) notifyReady();
+        const onLoad = () => {
+          if (typeof img.decode === "function") {
+            img.decode().then(done, done);
+          } else {
+            done();
+          }
         };
-
-        pending.forEach((el) => {
-          const doneEvent = el.tagName === "IMG" ? "load" : "loadeddata";
-          el.addEventListener(doneEvent, onSettle, { once: true });
-          el.addEventListener("error", onSettle, { once: true });
+        img.addEventListener("load", onLoad, { once: true });
+        img.addEventListener("error", done, { once: true });
+        detachers.add(() => {
+          img.removeEventListener("load", onLoad);
+          img.removeEventListener("error", done);
         });
       });
-    });
+
+    const settleVideo = (video) =>
+      new Promise((resolve) => {
+        // readyState 3 (HAVE_FUTURE_DATA) means there's a frame to show.
+        if (video.readyState >= 3) {
+          resolve();
+          return;
+        }
+        const done = () => resolve();
+        video.addEventListener("loadeddata", done, { once: true });
+        video.addEventListener("error", done, { once: true });
+        detachers.add(() => {
+          video.removeEventListener("loadeddata", done);
+          video.removeEventListener("error", done);
+        });
+      });
+
+    const withBudget = (promise) =>
+      Promise.race([promise, delay(PER_ASSET_TIMEOUT_MS)]);
+
+    // Below-the-fold and lazily-loaded media would otherwise stall every
+    // navigation until the outer timeout, since the browser deliberately
+    // hasn't fetched them yet.
+    const isAboveTheFold = (el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) return false;
+      const viewport = window.innerHeight || 0;
+      return (
+        rect.top < viewport * (1 + VIEWPORT_MARGIN) &&
+        rect.bottom > -viewport * VIEWPORT_MARGIN
+      );
+    };
+
+    const waitForMedia = async () => {
+      await painted;
+      if (cancelled) return;
+
+      const container = pageRef.current || document;
+      const media = Array.from(
+        container.querySelectorAll("img, video")
+      ).filter(isAboveTheFold);
+
+      const total = media.length;
+      if (total === 0) {
+        notifyProgress(0, 0);
+        return;
+      }
+
+      let loaded = 0;
+      notifyProgress(0, total);
+
+      await Promise.all(
+        media.map((el) =>
+          withBudget(
+            el.tagName === "IMG" ? settleImage(el) : settleVideo(el)
+          ).then(() => {
+            loaded += 1;
+            notifyProgress(loaded, total);
+          })
+        )
+      );
+    };
+
+    // Fonts count too: revealing mid-swap means the visitor watches the
+    // headings reflow right after the overlay lifts.
+    const waitForFonts = () => {
+      if (typeof document === "undefined" || !document.fonts) {
+        return Promise.resolve();
+      }
+      return document.fonts.ready.catch(() => {});
+    };
+
+    Promise.race([
+      Promise.all([waitForMedia(), waitForFonts()]),
+      delay(READINESS_TIMEOUT_MS),
+    ]).then(notifyReady);
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(rafId1);
-      if (rafId2) cancelAnimationFrame(rafId2);
+      frames.forEach((id) => cancelAnimationFrame(id));
+      timers.forEach((id) => clearTimeout(id));
+      detachers.forEach((detach) => detach());
+      frames.clear();
+      timers.clear();
+      detachers.clear();
     };
   }, [pathname]);
 
