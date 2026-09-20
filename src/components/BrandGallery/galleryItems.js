@@ -1,49 +1,54 @@
 // Brand gallery items, ordered to match the staggered layout reference.
 // `position` maps each item to its cell(s) in the 8-column x 3-row grid
 // (see BrandGallery.css -> .brand-gallery-item--{n}).
-// The two large 2x2 cells (positions 1 & 4) are videos; the rest are stills
-// pulled from the loader gallery in /public/loader.
+// Project media alternates video and image across the full composition.
 export const brandGalleryItems = [
   {
     id: "brand-1",
-    label: "Loose Hits",
+    label: "Cafe Srinivasa",
     type: "video",
-    src: "/videos/Cocktail.mp4",
+    src: "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378603/6._Cult_Favourite.mp4",
+    href: "/work/food-beverages/cafe-srinivasa",
     position: 1,
   },
   {
     id: "brand-2",
-    label: "CF Mag",
+    label: "Cafe Toh",
     type: "image",
-    src: "/loader/loader-7.jpg",
+    src: "https://res.cloudinary.com/vaxfpcja/image/upload/v1788380469/vewcbj.png",
+    href: "/work/food-beverages/cafe-toh",
     position: 2,
   },
   {
     id: "brand-3",
-    label: "MODC",
-    type: "image",
-    src: "/loader/loader-21.jpg",
+    label: "Hive Cafe",
+    type: "video",
+    src: "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021541/1._Conners_of_hive.mp4",
+    href: "/work/food-beverages/hive-cafe",
     position: 3,
   },
   {
     id: "brand-4",
-    label: "MODC",
-    type: "video",
-    src: "/videos/Matilda.mp4",
+    label: "Dine & Discover",
+    type: "image",
+    src: "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/gjhv.png",
+    href: "/work/food-beverages/dine-and-discover",
     position: 4,
   },
   {
     id: "brand-5",
-    label: "Osmon Studios",
-    type: "image",
-    src: "/loader/loader-34.jpg",
+    label: "Baked by Nini's",
+    type: "video",
+    src: "https://res.cloudinary.com/vaxfpcja/video/upload/v1788365967/1._Monsoon_Vibe.mp4",
+    href: "/work/food-beverages/baked-by-ninis",
     position: 5,
   },
   {
     id: "brand-6",
-    label: "IO Magazine",
+    label: "Home Bakers",
     type: "image",
-    src: "/loader/loader-52.jpg",
+    src: "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114054/bdshc.jpg",
+    href: "/work/food-beverages/home-bakers",
     position: 6,
   },
 ];

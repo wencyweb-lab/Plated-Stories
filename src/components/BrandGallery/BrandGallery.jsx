@@ -9,12 +9,14 @@ import CustomEase from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
 import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
 import { optimizeImageUrl } from "@/lib/media-delivery";
+import { useViewTransition } from "@/hooks/useViewTransition";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, CustomEase);
 CustomEase.create("hop", "0.9, 0, 0.1, 1");
 
 export default function BrandGallery() {
   const galleryRef = useRef(null);
+  const { navigateWithTransition, router } = useViewTransition();
 
   useGSAP(
     () => {
@@ -90,9 +92,16 @@ export default function BrandGallery() {
         </div>
 
         {brandGalleryItems.map((item) => (
-          <div
+          <a
             key={item.id}
+            href={item.href}
             className={`brand-gallery-item brand-gallery-item--${item.position}`}
+            aria-label={`View ${item.label} project`}
+            onMouseEnter={() => router.prefetch(item.href)}
+            onClick={(event) => {
+              event.preventDefault();
+              navigateWithTransition(item.href);
+            }}
           >
             <div className="brand-gallery-item-img">
               {item.type === "video" ? (
@@ -117,7 +126,7 @@ export default function BrandGallery() {
             <div className="brand-gallery-item-label">
               <p className="sm">{item.label}</p>
             </div>
-          </div>
+          </a>
         ))}
       </div>
     </div>
