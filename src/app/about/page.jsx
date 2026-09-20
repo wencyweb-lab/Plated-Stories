@@ -8,6 +8,7 @@ import Footer from "@/components/Footer/Footer";
 import React, { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 import Copy from "@/components/Copy/Copy";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -50,7 +51,7 @@ const Page = () => {
       <section className="studio-copy">
         <div className="container">
           <div className="studio-copy-img">
-            <img src="/studio/studio-header.jpg" alt="" />
+            <img src={optimizeImageUrl("/studio/studio-header.jpg", 1920)} alt="" decoding="async" fetchPriority="high" />
           </div>
 
           <Copy animateOnScroll={true}>

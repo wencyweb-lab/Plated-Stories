@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { LuVolumeX, LuVolume } from "react-icons/lu";
 import { isVideo } from "@/components/CaseStudy/media";
+import { optimizeImageUrl, optimizeVideoUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -143,7 +144,9 @@ const DdShowreel = ({ media = [], label }) => {
   return (
     <section className="showreel dd-showreel" ref={sectionRef}>
       <div className="showreel-container">
-        {media.map((src, i) => (
+        {media.map((src, i) => {
+          const shouldPrime = i === index || i === (index + 1) % media.length;
+          return (
           <div
             className={`dd-showreel-layer${
               i === index ? " dd-showreel-layer--active" : ""
@@ -156,17 +159,22 @@ const DdShowreel = ({ media = [], label }) => {
                 ref={(el) => {
                   videoRefs.current[src] = el;
                 }}
-                src={src}
+                src={shouldPrime ? optimizeVideoUrl(src, 1920) : undefined}
                 muted={isMuted}
                 loop
                 playsInline
                 preload="metadata"
               />
             ) : (
-              <img src={src} alt={i === index ? label : ""} />
+              <img
+                src={shouldPrime ? optimizeImageUrl(src, 1920) : undefined}
+                alt={i === index ? label : ""}
+                decoding="async"
+              />
             )}
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div

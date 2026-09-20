@@ -8,6 +8,7 @@ import ClientReviews from "@/components/ClientReviews/ClientReviews";
 import Spotlight from "@/components/Spotlight/Spotlight";
 import BrandGallery from "@/components/BrandGallery/BrandGallery";
 import CTACard from "@/components/CTACard/CTACard";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 import Footer from "@/components/Footer/Footer";
 import Copy from "@/components/Copy/Copy";
 import HeroVisual from "@/components/HeroVisual/HeroVisual";
@@ -106,7 +107,7 @@ const Page = () => {
         <section className="studio-copy">
           <div className="container">
             <div className="studio-copy-img">
-              <img src="/studio/studio-header.jpg" alt="" />
+              <img src={optimizeImageUrl("/studio/studio-header.jpg", 1920)} alt="" loading="lazy" decoding="async" />
             </div>
 
             <Copy animateOnScroll={true}>

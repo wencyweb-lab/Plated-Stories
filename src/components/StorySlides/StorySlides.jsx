@@ -1,5 +1,6 @@
 "use client";
 import "./StorySlides.css";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 import { useEffect, useRef } from "react";
 import { stories } from "./stories.js";
 import { gsap } from "gsap";
@@ -207,7 +208,8 @@ export default function StorySlides() {
           newImgContainer.classList.add("img");
 
           const newStoryImg = document.createElement("img");
-          newStoryImg.src = story.storyImg;
+          newStoryImg.src = optimizeImageUrl(story.storyImg, 1200);
+          newStoryImg.decoding = "async";
           newStoryImg.alt = story.profileName;
 
           newImgContainer.appendChild(newStoryImg);
@@ -229,7 +231,7 @@ export default function StorySlides() {
       setTimeout(() => {
         const profileImg = storiesContainer.querySelector(".profile-icon img");
         if (profileImg) {
-          profileImg.src = story.profileImg;
+          profileImg.src = optimizeImageUrl(story.profileImg, 384);
         }
 
         const link = storiesContainer.querySelector(".link a");
@@ -271,7 +273,12 @@ export default function StorySlides() {
     <div className="stories-container stories" ref={storiesContainerRef}>
       <div className="story-img">
         <div className="img">
-          <img src="/stories/story-1.jpg" alt="" />
+          <img
+            src={optimizeImageUrl("/stories/story-1.jpg", 1200)}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
 
@@ -294,7 +301,12 @@ export default function StorySlides() {
 
           <div className="profile">
             <div className="profile-icon">
-              <img src="/stories/profile-1.png" alt="" />
+              <img
+                src={optimizeImageUrl("/stories/profile-1.png", 384)}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
             </div>
 
             <div className="profile-name">

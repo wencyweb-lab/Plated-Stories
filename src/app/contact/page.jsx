@@ -1,5 +1,6 @@
 "use client";
 import "./contact.css";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 import { useEffect, useRef } from "react";
 import Button from "@/components/Button/Button";
 import Copy from "@/components/Copy/Copy";
@@ -44,7 +45,7 @@ const Page = () => {
               resolve();
             }
           };
-          img.src = `/objects/obj-${i}.png`;
+          img.src = optimizeImageUrl(`/objects/obj-${i}.png`, 384);
           preloadedImages.push(img);
         }
       });
@@ -101,13 +102,13 @@ const Page = () => {
 
       screensaverElement.style.width = `${config.size}px`;
       screensaverElement.style.height = `${config.size}px`;
-      screensaverElement.style.backgroundImage = `url(/objects/obj-${currentImageIndex}.png)`;
+      screensaverElement.style.backgroundImage = `url(${optimizeImageUrl(`/objects/obj-${currentImageIndex}.png`, 384)})`;
       screensaverElement.style.left = `${posX}px`;
       screensaverElement.style.top = `${posY}px`;
 
       const changeImage = () => {
         currentImageIndex = (currentImageIndex % config.imageCount) + 1;
-        screensaverElement.style.backgroundImage = `url(/objects/obj-${currentImageIndex}.png)`;
+        screensaverElement.style.backgroundImage = `url(${optimizeImageUrl(`/objects/obj-${currentImageIndex}.png`, 384)})`;
       };
 
       let canChangeDirection = true;

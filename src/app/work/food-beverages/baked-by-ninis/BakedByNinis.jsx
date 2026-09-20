@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import Footer from "@/components/Footer/Footer";
 import Copy from "@/components/Copy/Copy";
 import Button from "@/components/Button/Button";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -228,14 +229,16 @@ const BakedByNinis = ({ name, heroVideo, next }) => {
 
       <section className="bbn-reel" ref={reelRef} tabIndex={0}>
         <div className="bbn-reel-frame">
-          <video
+          <OptimizedVideo
             ref={videoRef}
             src={heroVideo}
+            width={1920}
+            eager
             autoPlay
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onVolumeChange={(e) => setIsMuted(e.currentTarget.muted)}

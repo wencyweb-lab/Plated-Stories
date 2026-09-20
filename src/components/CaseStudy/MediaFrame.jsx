@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { LuVolumeX, LuVolume, LuPlay, LuPause } from "react-icons/lu";
 import { isVideo } from "./media";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 // A single tile in a series strip or grid. Stills are plain images; a reel
 // autoplays muted (the only way browsers allow it) and carries a play/mute
@@ -85,7 +87,12 @@ const MediaFrame = ({
         aria-hidden={hidden}
         {...openProps}
       >
-        <img src={src} alt={hidden ? "" : label} loading="lazy" />
+        <img
+          src={optimizeImageUrl(src, landscape ? 1280 : 800)}
+          alt={hidden ? "" : label}
+          loading="lazy"
+          decoding="async"
+        />
         {clickable ? <span className="sm cs-frame-cue">View</span> : null}
       </div>
     );
@@ -119,9 +126,10 @@ const MediaFrame = ({
       aria-hidden={hidden}
       {...openProps}
     >
-      <video
+      <OptimizedVideo
         ref={videoRef}
         src={src}
+        width={landscape ? 1280 : 800}
         autoPlay
         muted
         loop

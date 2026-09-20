@@ -2,6 +2,8 @@
 import { useEffect } from "react";
 import { LuArrowLeft, LuArrowRight, LuX } from "react-icons/lu";
 import { isVideo } from "./media";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 // Full-frame viewer. Reels get real controls and sound here — the tile only
 // ever loops muted, because nobody asked it to make noise. Arrows and
@@ -37,9 +39,21 @@ const Lightbox = ({ open, items, index, name, onClose, onStep }) => {
 
       <div className="cs-lightbox-stage">
         {isVideo(src) ? (
-          <video src={src} autoPlay loop playsInline controls />
+          <OptimizedVideo
+            src={src}
+            width={1920}
+            autoPlay
+            loop
+            playsInline
+            controls
+            eager
+          />
         ) : (
-          <img src={src} alt={`${name} ${index + 1}`} />
+          <img
+            src={optimizeImageUrl(src, 1920)}
+            alt={`${name} ${index + 1}`}
+            decoding="async"
+          />
         )}
       </div>
 

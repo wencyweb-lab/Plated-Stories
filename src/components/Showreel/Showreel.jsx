@@ -1,20 +1,60 @@
 "use client";
 import "./Showreel.css";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { LuVolumeX, LuVolume } from "react-icons/lu";
+import { workCategories } from "@/app/work/workCategories.js";
+import { isVideo } from "@/components/CaseStudy/media";
+import { optimizeImageUrl, optimizeVideoUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+const PROJECT_REELS = [
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788365967/1._Monsoon_Vibe.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378603/6._Cult_Favourite.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378600/7._Idli_Making.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378596/2._Dal_Vada.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378572/10._Thali.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378571/8._Benne_Dosa.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788377446/1._Mulbagal_Dosa.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413984/eyi.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413980/eiruo.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413967/xfgfchvgj.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788413967/rwe.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021541/1._Conners_of_hive.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021540/2._Serving_Now.mov",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021535/3._Food_is_Art.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789021556/4._Soba_Noodles.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114078/1._Hamper.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114071/1._DIY.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114064/2._Cake_Canvas.mp4",
+];
+
+const projects = workCategories.flatMap((category) => category.projects);
+const PROJECT_IMAGES = [0, 1, 2]
+  .flatMap((imageIndex) => projects.map((project) => project.images[imageIndex]))
+  .filter(Boolean)
+  .slice(0, PROJECT_REELS.length);
+
+const PROJECT_SHOWREEL_MEDIA = PROJECT_IMAGES.flatMap((image, index) => [
+  image,
+  PROJECT_REELS[index],
+]);
+
+const STILL_MS = 2200;
+const VIDEO_MS = 4000;
 
 const Showreel = () => {
   const showreelSecRef = useRef(null);
   const audioRef = useRef(null);
-  const [currentFrame, setCurrentFrame] = useState(1);
+  const videoRefs = useRef({});
+  const [currentFrame, setCurrentFrame] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
-  const totalFrames = 7;
-  const frameInterval = 500;
+  const [inView, setInView] = useState(true);
+  const currentMedia = PROJECT_SHOWREEL_MEDIA[currentFrame];
+  const nextFrame = (currentFrame + 1) % PROJECT_SHOWREEL_MEDIA.length;
 
   const toggleMute = () => {
     if (audioRef.current) {
@@ -27,20 +67,55 @@ const Showreel = () => {
     }
   };
 
+  useEffect(() => {
+    if (PROJECT_SHOWREEL_MEDIA.length < 2 || !inView) return;
+
+    const id = setTimeout(
+      () =>
+        setCurrentFrame((frame) =>
+          (frame + 1) % PROJECT_SHOWREEL_MEDIA.length
+        ),
+      isVideo(currentMedia) ? VIDEO_MS : STILL_MS
+    );
+
+    return () => clearTimeout(id);
+  }, [currentFrame, currentMedia, inView]);
+
+  useEffect(() => {
+    Object.entries(videoRefs.current).forEach(([src, video]) => {
+      if (!video) return;
+
+      video.muted = true;
+      video.volume = 0;
+
+      if (src === currentMedia && inView) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else if (!video.paused) {
+        video.pause();
+      }
+    });
+  }, [currentMedia, inView]);
+
+  useEffect(() => {
+    const section = showreelSecRef.current;
+    if (!section || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1000px)", () => {
         const scrollTriggerInstances = [];
-
-        const frameTimeline = gsap.timeline({ repeat: -1 });
-
-        for (let i = 1; i <= totalFrames; i++) {
-          frameTimeline.add(() => {
-            setCurrentFrame(i);
-          }, (i - 1) * (frameInterval / 1000));
-        }
 
         if (audioRef.current) {
           audioRef.current.play().catch((error) => {});
@@ -81,8 +156,6 @@ const Showreel = () => {
         window.addEventListener("load", onLoad, { passive: true });
 
         return () => {
-          frameTimeline.kill();
-
           scrollTriggerInstances.forEach((trigger) => trigger.kill());
 
           window.removeEventListener("orientationchange", refreshHandler);
@@ -124,10 +197,38 @@ const Showreel = () => {
   return (
     <section className="showreel" ref={showreelSecRef}>
       <div className="showreel-container">
-        <img
-          src={`/showreel/showreel-frame-${currentFrame}.jpg`}
-          alt="Showreel frame"
-        />
+        {PROJECT_SHOWREEL_MEDIA.map((src, i) => {
+          const shouldPrime = i === currentFrame || i === nextFrame;
+
+          return (
+            <div
+              className={`showreel-layer${
+                i === currentFrame ? " showreel-layer--active" : ""
+              }`}
+              key={src}
+              aria-hidden={i !== currentFrame}
+            >
+              {isVideo(src) ? (
+                <video
+                  ref={(el) => {
+                    videoRefs.current[src] = el;
+                  }}
+                  src={shouldPrime ? optimizeVideoUrl(src, 1920) : undefined}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+              ) : (
+                <img
+                  src={shouldPrime ? optimizeImageUrl(src, 1920) : undefined}
+                  alt={i === currentFrame ? "Project showreel" : ""}
+                  decoding="async"
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <div className="volume-icon" onClick={toggleMute}>

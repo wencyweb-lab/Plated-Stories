@@ -2,6 +2,7 @@
 import "./sample-project.css";
 import Footer from "@/components/Footer/Footer";
 import Copy from "@/components/Copy/Copy";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 const Page = () => {
   return (
@@ -15,7 +16,7 @@ const Page = () => {
 
       <section className="project-banner-img">
         <div className="project-banner-img-wrapper">
-          <img src="/project/sample-project-1.jpg" alt="" />
+          <img src={optimizeImageUrl("/project/sample-project-1.jpg", 1920)} alt="" decoding="async" fetchPriority="high" />
         </div>
       </section>
 
@@ -66,31 +67,31 @@ const Page = () => {
         <div className="project-images-container">
           <div className="project-img">
             <div className="project-img-wrapper">
-              <img src="/project/sample-project-2.jpg" alt="" />
+              <img src={optimizeImageUrl("/project/sample-project-2.jpg", 1200)} alt="" loading="lazy" decoding="async" />
             </div>
           </div>
 
           <div className="project-img">
             <div className="project-img-wrapper">
-              <img src="/project/sample-project-3.jpg" alt="" />
+              <img src={optimizeImageUrl("/project/sample-project-3.jpg", 1200)} alt="" loading="lazy" decoding="async" />
             </div>
           </div>
 
           <div className="project-img">
             <div className="project-img-wrapper">
-              <img src="/project/sample-project-4.jpg" alt="" />
+              <img src={optimizeImageUrl("/project/sample-project-4.jpg", 1200)} alt="" loading="lazy" decoding="async" />
             </div>
           </div>
 
           <div className="project-img">
             <div className="project-img-wrapper">
-              <img src="/project/sample-project-5.jpg" alt="" />
+              <img src={optimizeImageUrl("/project/sample-project-5.jpg", 1200)} alt="" loading="lazy" decoding="async" />
             </div>
           </div>
 
           <div className="project-img">
             <div className="project-img-wrapper">
-              <img src="/project/sample-project-6.jpg" alt="" />
+              <img src={optimizeImageUrl("/project/sample-project-6.jpg", 1200)} alt="" loading="lazy" decoding="async" />
             </div>
           </div>
         </div>
@@ -141,7 +142,7 @@ const Page = () => {
 
         <div className="next-project-img">
           <div className="next-project-img-wrapper">
-            <img src="/project/next-project.jpg" alt="" />
+            <img src={optimizeImageUrl("/project/next-project.jpg", 1200)} alt="" loading="lazy" decoding="async" />
           </div>
         </div>
 

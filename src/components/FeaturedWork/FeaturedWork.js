@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useViewTransition } from "@/hooks/useViewTransition";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -24,7 +25,7 @@ export default function FeaturedWork() {
            <div class="featured-work-item-copy">
             <h3>${project.name}</h3>
           </div>
-            <img src="${project.img}" alt="${project.name}" />
+            <img src="${optimizeImageUrl(project.img, 1200)}" alt="${project.name}" loading="lazy" decoding="async" />
           </div>
         </a>
       `;

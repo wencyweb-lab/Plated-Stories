@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { LuVolumeX, LuVolume, LuPlay, LuPause } from "react-icons/lu";
 import Footer from "@/components/Footer/Footer";
 import Copy from "@/components/Copy/Copy";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 // Mute + play/pause overlay for the hero video, styled after the
 // homepage Showreel's volume toggle (react-icons/lu, same icon family).
@@ -75,17 +77,24 @@ const ProjectPage = ({ name, images = [], heroVideo }) => {
       <section className="project-banner-img" tabIndex={heroVideo ? 0 : undefined}>
         <div className="project-banner-img-wrapper">
           {heroVideo ? (
-            <video
+            <OptimizedVideo
               ref={videoRef}
               src={heroVideo}
+              width={1920}
+              eager
               autoPlay
               muted
               loop
               playsInline
-              preload="auto"
+              preload="metadata"
             />
           ) : (
-            <img src={at(0)} alt={name} />
+            <img
+              src={optimizeImageUrl(at(0), 1920)}
+              alt={name}
+              decoding="async"
+              fetchPriority="high"
+            />
           )}
         </div>
 
@@ -131,7 +140,12 @@ const ProjectPage = ({ name, images = [], heroVideo }) => {
           {[1, 2, 3, 4, 5].map((i) => (
             <div className="project-img" key={i}>
               <div className="project-img-wrapper">
-                <img src={at(i)} alt={`${name} preview ${i}`} />
+                <img
+                  src={optimizeImageUrl(at(i), 1400)}
+                  alt={`${name} preview ${i}`}
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             </div>
           ))}

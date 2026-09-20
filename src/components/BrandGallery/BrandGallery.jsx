@@ -7,6 +7,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CustomEase from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, CustomEase);
 CustomEase.create("hop", "0.9, 0, 0.1, 1");
@@ -94,16 +96,22 @@ export default function BrandGallery() {
           >
             <div className="brand-gallery-item-img">
               {item.type === "video" ? (
-                <video
+                <OptimizedVideo
                   src={item.src}
+                  width={960}
                   autoPlay
                   muted
                   loop
                   playsInline
-                  preload="auto"
+                  preload="metadata"
                 />
               ) : (
-                <img src={item.src} alt={item.label} />
+                <img
+                  src={optimizeImageUrl(item.src, 960)}
+                  alt={item.label}
+                  loading="lazy"
+                  decoding="async"
+                />
               )}
             </div>
             <div className="brand-gallery-item-label">

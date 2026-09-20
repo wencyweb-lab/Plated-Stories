@@ -5,6 +5,7 @@ import gsap from "gsap";
 import CustomEase from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
 import { isInitialLoad } from "@/components/Preloader/Preloader";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 CustomEase.create("hop", "0.9, 0, 0.1, 1");
@@ -50,13 +51,27 @@ export default function HeroVisual() {
   return (
     <div className="hero-visual" ref={containerRef} aria-hidden="true">
       <div className="hero-visual-banner hero-visual-banner-1">
-        <video src="/videos/Anklet.mp4" autoPlay muted loop playsInline preload="auto" />
+        <OptimizedVideo
+          src="/videos/Anklet.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          loadDelay={isInitialLoad ? 7500 : 2200}
+        />
       </div>
       <div className="hero-visual-banner hero-visual-banner-2">
-        <video src="/videos/Cocktail.mp4" autoPlay muted loop playsInline preload="auto" />
+        <OptimizedVideo
+          src="/videos/Cocktail.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          loadDelay={isInitialLoad ? 6500 : 1200}
+        />
       </div>
       <div className="hero-visual-center">
-        <video src="/videos/Matilda.mp4" autoPlay muted loop playsInline preload="auto" />
+        <OptimizedVideo src="/videos/Matilda.mp4" autoPlay muted loop playsInline eager />
       </div>
     </div>
   );

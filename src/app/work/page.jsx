@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { useViewTransition } from "@/hooks/useViewTransition";
 import Copy from "@/components/Copy/Copy";
 import { workCategories } from "./workCategories.js";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP);
 
@@ -188,7 +189,12 @@ const Page = () => {
                             className="folder-preview-img"
                             key={`${item.index}-img-${i}`}
                           >
-                            <img src={src} alt={`${item.name} preview ${i + 1}`} />
+                            <img
+                              src={optimizeImageUrl(src, 640)}
+                              alt={`${item.name} preview ${i + 1}`}
+                              loading="lazy"
+                              decoding="async"
+                            />
                           </div>
                         ))}
                       </div>

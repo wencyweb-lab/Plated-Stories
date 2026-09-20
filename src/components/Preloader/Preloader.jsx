@@ -5,6 +5,7 @@ import gsap from "gsap";
 import CustomEase from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 CustomEase.create("hop", "0.9, 0, 0.1, 1");
@@ -19,6 +20,10 @@ const allImageSources = Array.from(
 
 // The tile that survives the shuffle and zooms in to hand off to the hero.
 const HERO_IMG = allImageSources[0];
+const animationImageSources = allImageSources
+  .slice(1, 28)
+  .map((src) => optimizeImageUrl(src, 640));
+const optimizedHeroImage = optimizeImageUrl(HERO_IMG, 1920);
 
 // The nine tiles the grid starts on before the shuffle takes over (centre = hero).
 const initialGrid = [
@@ -83,7 +88,7 @@ const Preloader = () => {
         const otherTiles = gridImages.filter((tile) => tile !== heroTile);
 
         const getRandomImageSet = () => {
-          const shuffled = [...allImageSources].sort(() => 0.5 - Math.random());
+          const shuffled = [...animationImageSources].sort(() => 0.5 - Math.random());
           return shuffled.slice(0, 9);
         };
 
@@ -101,7 +106,7 @@ const Preloader = () => {
                 if (!imgElement) return;
 
                 if (cycle === totalCycles - 1 && tile === heroTile) {
-                  imgElement.src = HERO_IMG;
+                  imgElement.src = optimizedHeroImage;
                   gsap.set(heroTile.querySelector("img"), { scale: 2 });
                 } else {
                   imgElement.src = randomImages[index];
@@ -217,7 +222,11 @@ const Preloader = () => {
               const isHero = index === 4;
               return (
                 <div className={`img${isHero ? " hero-img" : ""}`} key={col}>
-                  <img src={initialGrid[index]} alt="" />
+                  <img
+                    src={isHero ? optimizedHeroImage : optimizeImageUrl(initialGrid[index], 640)}
+                    alt=""
+                    decoding="async"
+                  />
                 </div>
               );
             })}

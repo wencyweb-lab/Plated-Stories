@@ -12,6 +12,8 @@ import ContentsIndex from "@/components/CaseStudy/ContentsIndex";
 import SeriesSection from "@/components/CaseStudy/SeriesSection";
 import Lightbox from "@/components/CaseStudy/Lightbox";
 import { isVideo } from "@/components/CaseStudy/media";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -257,9 +259,9 @@ const CafeToh = ({ name, next }) => {
             {HERO_FRAMES.map((src, i) => (
               <div className={`toh-tile toh-hero-tile--${i + 1}`} key={src}>
                 {isVideo(src) ? (
-                  <video src={src} autoPlay muted loop playsInline />
+                  <OptimizedVideo src={src} width={720} autoPlay muted loop playsInline eager />
                 ) : (
-                  <img src={src} alt="" />
+                  <img src={optimizeImageUrl(src, 720)} alt="" decoding="async" />
                 )}
               </div>
             ))}

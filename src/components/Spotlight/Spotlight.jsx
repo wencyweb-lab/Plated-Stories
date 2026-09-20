@@ -5,6 +5,16 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import SplitType from "split-type";
+import { optimizeImageUrl } from "@/lib/media-delivery";
+
+const SpotlightImage = ({ number }) => (
+  <img
+    src={optimizeImageUrl(`/spotlight/spotlight-${number}.jpg`, 640)}
+    alt=""
+    loading="lazy"
+    decoding="async"
+  />
+);
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -95,19 +105,19 @@ const Spotlight = () => {
         <div className="marquee-container" id="marquee-1">
           <div className="marquee">
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-1.jpg" alt="" />
+              <SpotlightImage number={1} />
             </div>
             <div className="marquee-img-item marquee-text-item">
               <h1>Curation</h1>
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-2.jpg" alt="" />
+              <SpotlightImage number={2} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-3.jpg" alt="" />
+              <SpotlightImage number={3} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-4.jpg" alt="" />
+              <SpotlightImage number={4} />
             </div>
           </div>
         </div>
@@ -115,19 +125,19 @@ const Spotlight = () => {
         <div className="marquee-container" id="marquee-2">
           <div className="marquee">
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-5.jpg" alt="" />
+              <SpotlightImage number={5} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-6.jpg" alt="" />
+              <SpotlightImage number={6} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-7.jpg" alt="" />
+              <SpotlightImage number={7} />
             </div>
             <div className="marquee-img-item marquee-text-item">
               <h1>Direction</h1>
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-8.jpg" alt="" />
+              <SpotlightImage number={8} />
             </div>
           </div>
         </div>
@@ -135,19 +145,19 @@ const Spotlight = () => {
         <div className="marquee-container" id="marquee-3">
           <div className="marquee">
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-9.jpg" alt="" />
+              <SpotlightImage number={9} />
             </div>
             <div className="marquee-img-item marquee-text-item">
               <h1>Shooting</h1>
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-10.jpg" alt="" />
+              <SpotlightImage number={10} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-11.jpg" alt="" />
+              <SpotlightImage number={11} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-12.jpg" alt="" />
+              <SpotlightImage number={12} />
             </div>
           </div>
         </div>
@@ -155,19 +165,19 @@ const Spotlight = () => {
         <div className="marquee-container" id="marquee-4">
           <div className="marquee">
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-13.jpg" alt="" />
+              <SpotlightImage number={13} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-14.jpg" alt="" />
+              <SpotlightImage number={14} />
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-15.jpg" alt="" />
+              <SpotlightImage number={15} />
             </div>
             <div className="marquee-img-item marquee-text-item">
               <h1>Editing</h1>
             </div>
             <div className="marquee-img-item">
-              <img src="/spotlight/spotlight-16.jpg" alt="" />
+              <SpotlightImage number={16} />
             </div>
           </div>
         </div>

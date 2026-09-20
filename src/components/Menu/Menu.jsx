@@ -2,6 +2,7 @@
 import "./Menu.css";
 import { useViewTransition } from "@/hooks/useViewTransition";
 import { workCategories } from "@/app/work/workCategories.js";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 const Menu = () => {
   const { navigateWithTransition } = useViewTransition();
@@ -49,7 +50,11 @@ const Menu = () => {
           }}
         >
           <span className="nav-logo-frame">
-            <img src="/logo.png" alt="Plated Stories" />
+            <img
+              src={optimizeImageUrl("/logo.png", 640)}
+              alt="Plated Stories"
+              decoding="async"
+            />
           </span>
         </a>
       </div>

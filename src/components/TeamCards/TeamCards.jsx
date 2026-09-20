@@ -5,6 +5,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -219,7 +220,7 @@ export default function TeamCards() {
             ref={(el) => (cardsRef.current[idx] = el)}
           >
             <div className="card-img">
-              <img src={m.img} alt={m.alt} />
+              <img src={optimizeImageUrl(m.img, 750)} alt={m.alt} loading="lazy" decoding="async" />
             </div>
             <div className="card-content">
               <div className="card-title">
@@ -241,7 +242,7 @@ export default function TeamCards() {
         {teamMembers.map((m) => (
           <div className="card" id={m.id} key={`m-${m.id}`}>
             <div className="card-img">
-              <img src={m.img} alt={m.alt} />
+              <img src={optimizeImageUrl(m.img, 750)} alt={m.alt} loading="lazy" decoding="async" />
             </div>
             <div className="card-content">
               <div className="card-title">

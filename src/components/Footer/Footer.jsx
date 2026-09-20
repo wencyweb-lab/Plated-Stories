@@ -3,6 +3,7 @@ import "./Footer.css";
 import React, { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { optimizeImageUrl } from "@/lib/media-delivery";
 import Button from "../Button/Button";
 import { IoMail } from "react-icons/io5";
 import Copy from "../Copy/Copy";
@@ -27,7 +28,7 @@ const Footer = () => {
   const imageParticleCount = 10;
   const imagePaths = Array.from(
     { length: imageParticleCount },
-    (_, i) => `/objects/obj-${i + 1}.png`
+    (_, i) => optimizeImageUrl(`/objects/obj-${i + 1}.png`, 384)
   );
 
   useEffect(() => {
