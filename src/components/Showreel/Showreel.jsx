@@ -210,7 +210,7 @@ const Showreel = () => {
               className={`showreel-layer${
                 i === currentFrame ? " showreel-layer--active" : ""
               }`}
-              key={src}
+              key={`${src}-${i}`}
               aria-hidden={i !== currentFrame}
             >
               {isVideo(src) ? (
