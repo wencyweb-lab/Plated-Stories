@@ -1,29 +1,71 @@
+/* Mobile-first: the reviews are a plain vertical list. The stacked-card
+   treatment below (min-width: 1000px) is layered on top of that, and its
+   breakpoint matches the gsap.matchMedia query in ClientReviews.jsx exactly
+   — if the two ever drift, the cards get absolutely positioned with no
+   timeline to place them and every card lands on the same spot. */
 .client-reviews {
   position: relative;
   width: 100%;
-  height: 100%;
   background-color: var(--base-100);
+
+  /* Every space inside a card — its padding, the gap under the quote, the
+     gap between the two credit lines — is a multiple of the quote's own type
+     size, so the card's proportions hold at any viewport instead of the type
+     scaling while fixed rem gaps stay put. */
+  --quote-size: clamp(1.25rem, 2.4vw, 2.5rem);
 }
 
 .client-reviews .review-card {
   position: relative;
   width: 100%;
-  height: 100svh;
-  padding: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 3rem;
+  padding: 1.25rem 1.25rem 0 1.25rem;
 }
 
 .client-reviews .review-card-container {
   position: relative;
-  width: 60%;
-  height: 50%;
+  width: 90%;
   display: flex;
-  padding: 2rem;
+  padding: calc(var(--quote-size) * 1.1) calc(var(--quote-size) * 1.25);
   border-radius: 1rem;
-  will-change: transform;
+}
+
+/* The text block is the flex child that holds the quote. Without `min-width: 0`
+   it keeps its min-content width — long unbreakable runs of uppercase then
+   push the wrapper wider than the card and the quote spills out past the
+   rounded edge. */
+.client-reviews .review-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The quote and the credit sit one after the other with a single gap between
+   them — no `space-between`, which would stretch that gap to whatever height
+   the card happened to have and leave a dead band under short reviews. The
+   card takes its height from this block instead, so the spacing is the same
+   whether a review runs two lines or six. */
+.client-reviews .review-card-content-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--quote-size) * 0.95);
+  text-align: center;
+}
+
+.client-reviews h3.review-card-text {
+  font-size: var(--quote-size);
+  line-height: 1.05;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+}
+
+.client-reviews .review-card-client-info {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--quote-size) * 0.25);
 }
 
 .client-reviews #review-card-1 {
@@ -55,20 +97,6 @@
   color: var(--base-100);
 }
 
-.client-reviews .review-card-content-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: center;
-}
-
-.client-reviews h3.review-card-text {
-  font-size: 3rem;
-  letter-spacing: 0;
-}
-
 .client-reviews p.sm.review-card-client-company {
   color: var(--base-100);
   opacity: 0.4;
@@ -80,34 +108,35 @@
   color: var(--base-400);
 }
 
-@media (max-width: 1000px) {
-  .client-reviews .review-card-container {
-    flex-direction: column;
-    gap: 0;
-    width: 90%;
-    height: 100%;
-    padding: 1.25rem;
-  }
-
-  .client-reviews .review-card-content-wrapper {
-    width: 100%;
-    justify-content: center;
-    gap: 2rem;
-  }
-
-  .client-reviews .review-card-index {
-    flex: 1;
-  }
-
-  .client-reviews .review-card-content {
-    height: 100%;
-  }
-
-  .client-reviews h3.review-card-text {
-    font-size: 2rem;
+@media (min-width: 1000px) {
+  /* One viewport-tall stage. The cards are stacked on top of each other
+     inside it and the pinned timeline slides each one up over the last, so
+     the section owns exactly one screen of layout no matter how many
+     reviews there are. */
+  .client-reviews {
+    height: 100svh;
+    overflow: hidden;
   }
 
   .client-reviews .review-card {
-    padding: 1.25rem 0 0 0;
+    position: absolute;
+    inset: 0;
+    padding: 1.5rem;
+    will-change: transform;
+  }
+
+  /* Height comes from the quote, not the other way round: a two-line review
+     gets a short card and a six-line review a tall one, with identical
+     padding either side. `max-height` is only a guard so an unusually long
+     review can never grow past the stage it has to animate inside. */
+  /* Narrower than the stage on purpose: the quote wraps onto more lines, and
+     because the height follows the text the card grows taller to match. That
+     portrait-ish proportion is the point — a full-width card reads as a
+     banner, not as something someone said. */
+  .client-reviews .review-card-container {
+    width: min(50rem, 90%);
+    max-height: 86%;
+    overflow: hidden;
+    will-change: transform;
   }
 }

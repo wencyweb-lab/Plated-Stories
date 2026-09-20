@@ -8,6 +8,13 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
+// How far the card underneath sinks as the next one covers it. Small numbers
+// on purpose — the stack should read as depth, not as the old card running
+// away from the new one.
+const SETTLE_SCALE = 0.92;
+const SETTLE_LIFT = -3;
+const TILT = 2.5;
+
 const ClientReviews = () => {
   const clientReviewsContainerRef = useRef(null);
 
@@ -15,87 +22,85 @@ const ClientReviews = () => {
     () => {
       const mm = gsap.matchMedia();
 
+      // One pinned stage, one scrubbed timeline. The previous version pinned
+      // every card separately with `pinSpacing: false` and no tween between
+      // them, so an incoming card simply guillotined the one below it
+      // mid-sentence, and the pins — created in a delayedCall, after other
+      // sections had already registered their own — measured against a stale
+      // layout and left a viewport-sized gap before the last card.
       mm.add("(min-width: 1000px)", () => {
-        const reviewCards = document.querySelectorAll(".review-card");
-        const cardContainers = document.querySelectorAll(
-          ".review-card-container"
-        );
+        const cards = gsap.utils.toArray(".review-card");
+        const containers = gsap.utils.toArray(".review-card-container");
+        const quotes = gsap.utils.toArray(".review-card-content-wrapper");
+        if (cards.length < 2) return;
 
-        cardContainers.forEach((cardContainer, index) => {
-          const rotation = index % 2 === 0 ? 3 : -3;
-          gsap.set(cardContainer, { rotation: rotation });
-
-          const computedStyle = window.getComputedStyle(cardContainer);
+        // Card 1 is already in place; the rest wait just below the stage.
+        // Tilt lives on the container and vertical travel on the card, so the
+        // two transforms never have to share a matrix.
+        gsap.set(cards, {
+          yPercent: (i) => (i === 0 ? 0 : 100),
+          zIndex: (i) => i + 1,
+        });
+        gsap.set(containers, {
+          rotation: (i) => (i % 2 === 0 ? TILT : -TILT),
+          scale: 1,
+          transformOrigin: "50% 50%",
         });
 
-        const scrollTriggerInstances = [];
-
-        gsap.delayedCall(0.1, () => {
-          reviewCards.forEach((card, index) => {
-            if (index < reviewCards.length - 1) {
-              const trigger = ScrollTrigger.create({
-                trigger: card,
-                start: "top top",
-                endTrigger: reviewCards[reviewCards.length - 1],
-                end: "top top",
-                pin: true,
-                pinSpacing: false,
-                scrub: 1,
-              });
-              scrollTriggerInstances.push(trigger);
-            }
-
-            if (index < reviewCards.length - 1) {
-              const trigger = ScrollTrigger.create({
-                trigger: reviewCards[index + 1],
-                start: "top bottom",
-                end: "top top",
-              });
-              scrollTriggerInstances.push(trigger);
-            }
-          });
+        const timeline = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: clientReviewsContainerRef.current,
+            start: "top top",
+            // One viewport of scrolling per handover, recalculated on
+            // refresh so a resize (or a mobile URL bar) can't strand the
+            // timeline against a stale end position.
+            end: () => `+=${(cards.length - 1) * window.innerHeight}`,
+            pin: true,
+            pinSpacing: true,
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
         });
 
-        const refreshHandler = () => {
-          ScrollTrigger.refresh();
-        };
-        window.addEventListener("orientationchange", refreshHandler);
-        const onLoad = () => ScrollTrigger.refresh();
-        window.addEventListener("load", onLoad, { passive: true });
+        cards.forEach((card, i) => {
+          if (i === 0) return;
+          const step = i - 1;
+
+          timeline
+            .to(
+              containers[i - 1],
+              { scale: SETTLE_SCALE, yPercent: SETTLE_LIFT, duration: 1 },
+              step
+            )
+            // The incoming card covers the one below from the bottom up, so
+            // the quote underneath has to be gone before that edge reaches
+            // it — otherwise you spend the handover reading a sentence
+            // sliced in half. The card body stays solid; only its text goes.
+            .to(quotes[i - 1], { opacity: 0, duration: 0.35 }, step + 0.1)
+            // Eased rather than linear: the cover crosses the middle of the
+            // handover quickly, so the half-covered moment — where the card
+            // below is a blank slab with its quote already gone — is over
+            // fast, while the arrival still settles gently.
+            .to(card, { yPercent: 0, duration: 1, ease: "power2.inOut" }, step);
+        });
 
         return () => {
-          scrollTriggerInstances.forEach((trigger) => trigger.kill());
-          window.removeEventListener("orientationchange", refreshHandler);
-          window.removeEventListener("load", onLoad);
+          timeline.kill();
+          gsap.set([...cards, ...containers, ...quotes], { clearProps: "all" });
         };
       });
 
+      // Below the breakpoint the cards are a plain scrolling list — nothing
+      // is pinned, so anything the desktop branch set has to come back off.
       mm.add("(max-width: 999px)", () => {
-        const reviewCards = document.querySelectorAll(".review-card");
-        const cardContainers = document.querySelectorAll(
-          ".review-card-container"
+        gsap.set(
+          gsap.utils.toArray(
+            ".review-card, .review-card-container, .review-card-content-wrapper"
+          ),
+          { clearProps: "all" }
         );
-
-        reviewCards.forEach((card) => {
-          if (card) gsap.set(card, { clearProps: "all" });
-        });
-        cardContainers.forEach((cardContainer) => {
-          if (cardContainer) gsap.set(cardContainer, { clearProps: "all" });
-        });
-
-        ScrollTrigger.refresh();
-
-        const refreshHandler = () => {
-          ScrollTrigger.refresh();
-        };
-        window.addEventListener("orientationchange", refreshHandler);
-        const onLoad = () => ScrollTrigger.refresh();
-        window.addEventListener("load", onLoad, { passive: true });
-
-        return () => {
-          window.removeEventListener("orientationchange", refreshHandler);
-          window.removeEventListener("load", onLoad);
-        };
       });
 
       return () => {
@@ -108,7 +113,7 @@ const ClientReviews = () => {
   return (
     <div className="client-reviews" ref={clientReviewsContainerRef}>
       {clientReviewsData.map((item, index) => (
-        <div className="review-card" key={index}>
+        <div className="review-card" key={item.clientName}>
           <div
             className="review-card-container"
             id={`review-card-${index + 1}`}

@@ -5,16 +5,46 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import SplitType from "split-type";
+import { isVideo } from "@/components/CaseStudy/media";
+import OptimizedVideo from "@/components/OptimizedVideo/OptimizedVideo";
 import { optimizeImageUrl } from "@/lib/media-delivery";
 
-const SpotlightImage = ({ number }) => (
-  <img
-    src={optimizeImageUrl(`/spotlight/spotlight-${number}.jpg`, 640)}
-    alt=""
-    loading="lazy"
-    decoding="async"
-  />
-);
+// Real stills and reels pulled from the shared studio pool and case-study
+// media, in place of the generic placeholder art that used to live in
+// /public/spotlight — the marquee now previews the actual work.
+const SPOTLIGHT_MEDIA = [
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/4.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/2.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788374646/5.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/as.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/er.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788375825/2d.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/cghbjh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788381159/xfgcfhgh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982241/sdg.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982239/grd.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1788982240/gdh.png",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/vghbxjk.jpg",
+  "https://res.cloudinary.com/vaxfpcja/image/upload/v1789114058/gfecbwhdjkcdw.jpg",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788365967/1._Monsoon_Vibe.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1788378603/6._Cult_Favourite.mp4",
+  "https://res.cloudinary.com/vaxfpcja/video/upload/v1789114078/1._Hamper.mp4",
+];
+
+const SpotlightImage = ({ number }) => {
+  const src = SPOTLIGHT_MEDIA[(number - 1) % SPOTLIGHT_MEDIA.length];
+
+  return isVideo(src) ? (
+    <OptimizedVideo src={src} width={640} autoPlay muted loop playsInline />
+  ) : (
+    <img
+      src={optimizeImageUrl(src, 640)}
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+  );
+};
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 

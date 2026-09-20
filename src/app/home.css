@@ -203,8 +203,16 @@
   text-align: center;
 }
 
+/* "APPROVED" is a single 8rem word — at 50% of the content column it
+   overflowed its box and got sliced off by the section's `overflow: hidden`.
+   The full column fits it, and the clamp keeps it from re-clipping on
+   narrower desktops. */
 .client-reviews-header-container .client-reviews-header {
-  width: 50%;
+  width: 100%;
+}
+
+.client-reviews-header-container .client-reviews-header h1 {
+  font-size: clamp(3.5rem, 8vw, 8rem);
 }
 
 .client-reviews-header-container .client-reviews-header-content .arrow {
