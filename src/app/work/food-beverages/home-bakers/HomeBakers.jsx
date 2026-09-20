@@ -92,7 +92,15 @@ const SECTIONS = [
     number: "04",
     name: "Mewa",
     copy: `Ingredient-forward bakes ${EM} the dried fruit and nut doing the work a filter usually would.`,
-    media: [],
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932936/werw.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932937/qw.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932937/12rfghjk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932937/ytu.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932937/po.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932942/12ed.jpg",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789933815/1._Main_1.mp4"
+    ],
   },
   {
     number: "05",
