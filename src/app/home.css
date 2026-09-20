@@ -171,8 +171,15 @@
   text-align: center;
 }
 
+/* Same clipping as the reviews headline: "FEATURED" is one 8rem word and at
+   50% of the content column it overflowed its box, then got sliced off by
+   the section's `overflow: hidden`. */
 .featured-work .featured-work-header {
-  width: 50%;
+  width: 100%;
+}
+
+.featured-work .featured-work-header h1 {
+  font-size: clamp(3.5rem, 8vw, 8rem);
 }
 
 .featured-work .featured-work-header-content .arrow {

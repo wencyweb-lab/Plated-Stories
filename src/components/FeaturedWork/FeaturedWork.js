@@ -1,14 +1,42 @@
 "use client";
 import "./FeaturedWork.css";
 import { useRef } from "react";
-import { projects } from "./project.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { workCategories } from "@/app/work/workCategories.js";
 import { useViewTransition } from "@/hooks/useViewTransition";
 import { optimizeImageUrl } from "@/lib/media-delivery";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+// The studies that have their own shot media rather than a slice of the
+// shared studio pool. They're listed by slug and resolved against
+// workCategories rather than copied, so a renamed project or a moved route
+// can't leave the homepage showing a stale name or linking at a page that
+// isn't there any more.
+const FEATURED_SLUGS = [
+  "cafe-srinivasa",
+  "home-bakers",
+  "hive-cafe",
+  "cafe-toh",
+  "dine-and-discover",
+  "baked-by-ninis",
+];
+
+const ALL_PROJECTS = workCategories.flatMap((category) =>
+  category.projects.map((project) => ({ ...project, category: category.title }))
+);
+
+const FEATURED = FEATURED_SLUGS.map((slug) =>
+  ALL_PROJECTS.find((project) => project.slug === slug)
+).filter(Boolean);
+
+const ROWS = FEATURED.reduce((rows, project, i) => {
+  if (i % 2 === 0) rows.push([project]);
+  else rows[rows.length - 1].push(project);
+  return rows;
+}, []);
 
 export default function FeaturedWork() {
   const featuredWorkContainerRef = useRef(null);
@@ -16,93 +44,73 @@ export default function FeaturedWork() {
 
   useGSAP(
     () => {
-      const createFeaturedWorkItem = (project) => {
-        const featuredWorkItem = document.createElement("div");
-        featuredWorkItem.className = "featured-work-item";
-        featuredWorkItem.innerHTML = `
-        <a href="${project.route}" class="featured-work-item-link">
-          <div class="featured-work-item-img">
-           <div class="featured-work-item-copy">
-            <h3>${project.name}</h3>
-          </div>
-            <img src="${optimizeImageUrl(project.img, 1200)}" alt="${project.name}" loading="lazy" decoding="async" />
-          </div>
-        </a>
-      `;
-        return featuredWorkItem;
-      };
+      // Each row swings its two cards in as it comes up. The offsets are
+      // deliberately modest: the previous version threw them 1000px with a
+      // 60deg tilt, which on any quick scroll meant a row was still visibly
+      // mid-flight — or, if its trigger measured before layout settled,
+      // never arrived at all.
+      gsap.utils.toArray(".featured-work-list .row").forEach((row) => {
+        const items = row.querySelectorAll(".featured-work-item");
 
-      const workContainer = featuredWorkContainerRef.current;
-
-      workContainer.innerHTML = "";
-
-      for (let i = 0; i < projects.length; i += 2) {
-        const row = document.createElement("div");
-        row.className = "row";
-
-        const leftItemIndex = i % projects.length;
-        const rightItemIndex = (i + 1) % projects.length;
-
-        row.appendChild(createFeaturedWorkItem(projects[leftItemIndex]));
-
-        if (i + 1 < projects.length * 2) {
-          row.appendChild(createFeaturedWorkItem(projects[rightItemIndex]));
-        }
-
-        workContainer.appendChild(row);
-      }
-
-      gsap.set(".featured-work-item", {
-        y: 1000,
-      });
-
-      document.querySelectorAll(".row").forEach((row) => {
-        const featuredWorkItems = row.querySelectorAll(".featured-work-item");
-
-        featuredWorkItems.forEach((item, itemIndex) => {
-          const isLeftProjectItem = itemIndex === 0;
-          gsap.set(item, {
-            rotation: isLeftProjectItem ? -60 : 60,
-            transformOrigin: "center center",
-          });
+        gsap.set(items, {
+          y: 180,
+          rotation: (i) => (i === 0 ? -12 : 12),
+          opacity: 0,
+          transformOrigin: "center center",
         });
 
         ScrollTrigger.create({
           trigger: row,
-          start: "top 70%",
-          onEnter: () => {
-            gsap.to(featuredWorkItems, {
+          start: "top 85%",
+          once: true,
+          onEnter: () =>
+            gsap.to(items, {
               y: 0,
               rotation: 0,
-              duration: 1,
-              ease: "power4.out",
-              stagger: 0.25,
-            });
-          },
+              opacity: 1,
+              duration: 1.1,
+              ease: "power3.out",
+              stagger: 0.12,
+            }),
         });
       });
-
-      const links = workContainer.querySelectorAll(".featured-work-item-link");
-      const handleClick = (e) => {
-        const anchor = e.currentTarget;
-        if (!anchor) return;
-        e.preventDefault();
-        const href = anchor.getAttribute("href");
-        if (!href) return;
-        navigateWithTransition(href);
-      };
-      links.forEach((a) => a.addEventListener("click", handleClick));
-
-      return () => {
-        links.forEach((a) => a.removeEventListener("click", handleClick));
-      };
     },
     { scope: featuredWorkContainerRef }
   );
 
+  const openProject = (href) => (e) => {
+    e.preventDefault();
+    navigateWithTransition(href);
+  };
+
   return (
-    <>
-      <div className="featured-work-list" ref={featuredWorkContainerRef}></div>
-    </>
+    <div className="featured-work-list" ref={featuredWorkContainerRef}>
+      {ROWS.map((row, rowIndex) => (
+        <div className="row" key={rowIndex}>
+          {row.map((project) => (
+            <div className="featured-work-item" key={project.slug}>
+              <a
+                href={project.href}
+                className="featured-work-item-link"
+                onClick={openProject(project.href)}
+              >
+                <div className="featured-work-item-img">
+                  <div className="featured-work-item-copy">
+                    <h3>{project.name}</h3>
+                    <p className="sm">{project.category}</p>
+                  </div>
+                  <img
+                    src={optimizeImageUrl(project.images[0], 1200)}
+                    alt={project.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
   );
 }
