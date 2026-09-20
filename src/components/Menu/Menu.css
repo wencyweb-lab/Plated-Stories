@@ -124,7 +124,7 @@ nav .nav-dropdown-link {
 
 nav .nav-dropdown-link:hover {
   color: var(--base-100) !important;
-  background-color: var(--base-100);
+  background-color: color-mix(in srgb, var(--base-100) 15%, transparent);
 }
 
 @media (max-width: 1000px) {

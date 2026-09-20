@@ -80,18 +80,44 @@ const SECTIONS = [
     number: "02",
     name: "Happy Box by Eishika",
     copy: `A baker's own name on the label, so the story behind the box gets the same frame as the bake.`,
-    media: [],
+    // Seven frames, all on one line.
+    columns: 7,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789937955/1._DIY_KIT.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789937939/2._Plum_Cake.mp4",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789938073/resgchjvbkj.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789938073/wrsetrdhtfyghu.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789938073/q3restrdtfhjgyhuk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789938072/earesrdhty.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789938070/wrsetdryftugyihu.jpg",
+    ],
   },
   {
     number: "03",
     name: "Juno's",
     copy: `The bakes a small following already orders on repeat, shot to earn the next one.`,
-    media: [],
+    marquee: true,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935591/compressed_image.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935591/compressed_image_1.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935590/compressed_image_3.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935590/compressed_image_2.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935590/compressed_image_5.jpg",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789936067/2._Hamper-compressed.mp4",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935589/compressed_image_4.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935589/compressed_image_7.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789935588/compressed_image_6.jpg",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789935792/fgcgrxgx.mp4",
+    ],
   },
   {
     number: "04",
     name: "Mewa",
     copy: `Ingredient-forward bakes ${EM} the dried fruit and nut doing the work a filter usually would.`,
+    // Seven frames, same weight class as Cafe Srinivasa's marquee chapters
+    // (5-7 items) rather than the grid layout, which is reserved for the
+    // smaller 3-4 item sets.
+    marquee: true,
     media: [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932936/werw.jpg",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932937/qw.jpg",
@@ -99,14 +125,22 @@ const SECTIONS = [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932937/ytu.jpg",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932937/po.jpg",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1789932942/12ed.jpg",
-      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789933815/1._Main_1.mp4"
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789933815/1._Main_1.mp4",
     ],
   },
   {
     number: "05",
     name: "Only Desserts",
     copy: `Nothing but the finish ${EM} the plate cleared down to just what${RSQUO}s worth photographing.`,
-    media: [],
+    marquee: true,
+    media: [
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789936682/wtrdghgcvjbkn.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789936683/erdhfgjhbjnk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789936982/2._Kunafa_Bars-compressed.mp4",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789936683/rqaesgxfhcvjbknlm.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789936684/resgfhvjbknm.jpg",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789936810/1._Cinematic-compressed.mp4",
+    ],
   },
 ];
 
