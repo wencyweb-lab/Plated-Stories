@@ -104,7 +104,7 @@ nav .nav-dropdown-inner {
   padding: 0.85rem;
   background-color: var(--base-500);
   border-radius: 0.5rem;
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.25);
+  box-shadow: none;
 }
 
 nav .nav-dropdown-link {
@@ -124,7 +124,7 @@ nav .nav-dropdown-link {
 
 nav .nav-dropdown-link:hover {
   color: var(--base-100) !important;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--base-100);
 }
 
 @media (max-width: 1000px) {

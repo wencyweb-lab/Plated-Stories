@@ -13,9 +13,9 @@
 .case-study {
   --cs-ground: var(--base-100);
   --cs-ink: var(--base-400);
-  --cs-dim: var(--base-300);
-  --cs-panel: #f4f0ea;
-  --cs-line: rgba(26, 22, 20, 0.14);
+  --cs-dim: var(--base-400);
+  --cs-panel: var(--base-100);
+  --cs-line: var(--base-400);
   --cs-accent: var(--base-500);
   --cs-gap: clamp(0.75rem, 1.5vw, 1.25rem);
 
@@ -162,7 +162,7 @@
 
 .case-study .cs-series--dark .cs-index,
 .case-study .cs-series--dark .cs-copy {
-  color: rgba(255, 255, 255, 0.66);
+  color: var(--base-100);
 }
 
 .case-study .cs-series-inner {
@@ -202,7 +202,7 @@
   break-inside: avoid;
   margin-bottom: var(--cs-gap);
   overflow: hidden;
-  background-color: rgba(26, 22, 20, 0.06);
+  background-color: var(--base-100);
 }
 
 .case-study .cs-frame--open {
@@ -239,7 +239,7 @@
    since the frame carries controls instead. */
 .case-study .cs-frame--video {
   aspect-ratio: 4 / 5;
-  background-color: rgba(23, 20, 18, 0.9);
+  background-color: var(--base-400);
 }
 
 .case-study .cs-gallery--landscape .cs-frame--video,
@@ -267,10 +267,10 @@
   bottom: 0.9rem;
   padding: 0.4rem 0.75rem;
   border-radius: 2rem;
-  background-color: rgba(18, 16, 15, 0.72);
+  background-color: var(--base-400);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  color: #ffffff;
+  color: var(--base-100);
   opacity: 0;
   transform: translateY(0.4rem);
   transition: opacity 250ms ease, transform 250ms ease;
@@ -311,7 +311,7 @@
   justify-content: center;
   border: none;
   border-radius: 100%;
-  background-color: rgba(23, 20, 18, 0.55);
+  background-color: var(--base-400);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--base-100);
@@ -320,7 +320,7 @@
 }
 
 .case-study .cs-frame-btn:hover {
-  background-color: rgba(23, 20, 18, 0.85);
+  background-color: var(--base-400);
   transform: scale(1.08);
 }
 
@@ -367,15 +367,15 @@
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 9%,
-    #000 91%,
+    var(--base-400) 9%,
+    var(--base-400) 91%,
     transparent 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 9%,
-    #000 91%,
+    var(--base-400) 9%,
+    var(--base-400) 91%,
     transparent 100%
   );
 }
@@ -454,7 +454,7 @@
 .cs-lightbox-bg {
   position: absolute;
   inset: 0;
-  background-color: rgba(10, 9, 8, 0.94);
+  background-color: var(--base-400);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -488,11 +488,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  color: #f6f1ec;
+  color: var(--base-100);
 }
 
 .cs-lightbox-bar p.sm {
-  color: rgba(246, 241, 236, 0.7);
+  color: var(--base-100);
 }
 
 .cs-lightbox-controls {
@@ -507,10 +507,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(246, 241, 236, 0.24);
+  border: 1px solid var(--base-100);
   border-radius: 100%;
   background-color: transparent;
-  color: #f6f1ec;
+  color: var(--base-100);
   cursor: pointer;
   transition: background-color 200ms ease, transform 200ms ease,
     border-color 200ms ease;

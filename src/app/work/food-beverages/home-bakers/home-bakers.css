@@ -8,12 +8,12 @@
    root. */
 
 .hb-case {
-  --cs-ground: #fbf5ee;
-  --cs-ink: #241c14;
-  --cs-dim: #948374;
-  --cs-panel: #f1e7d9;
-  --cs-line: rgba(36, 28, 20, 0.14);
-  --cs-accent: #c2593f;
+  --cs-ground: var(--base-100);
+  --cs-ink: var(--base-400);
+  --cs-dim: var(--base-400);
+  --cs-panel: var(--base-100);
+  --cs-line: var(--base-400);
+  --cs-accent: var(--base-500);
 }
 
 /* ------------------------------------------------------------------ hero */

@@ -191,9 +191,9 @@ const DdShowreel = ({ media = [], label }) => {
         }}
       >
         {isMuted ? (
-          <LuVolumeX color="#171412" size={25} />
+          <LuVolumeX color="var(--base-400)" size={25} />
         ) : (
-          <LuVolume color="#171412" size={25} />
+          <LuVolume color="var(--base-400)" size={25} />
         )}
       </div>
     </section>

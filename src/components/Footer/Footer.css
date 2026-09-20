@@ -68,11 +68,11 @@ footer .footer-copyright {
 
 footer .footer-author {
   justify-content: center;
-  color: var(--base-300);
+  color: var(--base-400);
 }
 
 footer .footer-time {
-  color: var(--base-300);
+  color: var(--base-400);
   justify-content: flex-start;
 }
 

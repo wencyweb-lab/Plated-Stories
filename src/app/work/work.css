@@ -182,31 +182,31 @@
 .folders .folder.variant-1 .folder-index,
 .folders .folder.variant-1 .folder-index::after,
 .folders .folder.variant-1 .folder-name {
-  background-color: var(--variant-1);
+  background-color: var(--base-100);
 }
 
 .folders .folder.variant-2 .folder-index,
 .folders .folder.variant-2 .folder-index::after,
 .folders .folder.variant-2 .folder-name {
-  background-color: var(--variant-2);
-  color: #fff;
+  background-color: var(--base-400);
+  color: var(--base-100);
 }
 
 .folders .folder.variant-3 .folder-index,
 .folders .folder.variant-3 .folder-index::after,
 .folders .folder.variant-3 .folder-name {
-  background-color: var(--variant-3);
+  background-color: var(--base-500);
 }
 
 .folders .folder.disabled .folder-index,
 .folders .folder.disabled .folder-index::after,
 .folders .folder.disabled .folder-name {
-  background-color: var(--disabled-folder-bg);
+  background-color: var(--base-100);
 }
 
 .folders .folder.disabled p,
 .folders .folder.disabled h1 {
-  color: var(--disabled-folder-fg);
+  color: var(--base-400);
 }
 
 @media (max-width: 1000px) {

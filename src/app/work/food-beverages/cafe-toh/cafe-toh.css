@@ -9,9 +9,9 @@
 
 .toh-case {
   /* A colder, brighter paper than the shared default. */
-  --cs-ink: #12100f;
-  --cs-dim: #8c7e77;
-  --cs-line: rgba(18, 16, 15, 0.14);
+  --cs-ink: var(--base-400);
+  --cs-dim: var(--base-400);
+  --cs-line: var(--base-400);
 }
 
 /* ------------------------------------------------------------------ hero */

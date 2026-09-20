@@ -34,7 +34,7 @@
 
 .bbn-case .bbn-eyebrow,
 .bbn-case .bbn-chapter-index {
-  color: var(--base-300);
+  color: var(--base-400);
 }
 
 /* ---------------------------------------------------------------- hero */
@@ -63,7 +63,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   padding-top: 2.5rem;
-  border-top: 1px solid rgba(26, 22, 20, 0.14);
+  border-top: 1px solid var(--base-400);
 }
 
 .bbn-case .bbn-meta-item {
@@ -129,7 +129,7 @@
   justify-content: center;
   border: none;
   border-radius: 100%;
-  background-color: rgba(23, 20, 18, 0.55);
+  background-color: var(--base-400);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--base-100);
@@ -138,7 +138,7 @@
 }
 
 .bbn-case .bbn-reel-btn:hover {
-  background-color: rgba(23, 20, 18, 0.85);
+  background-color: var(--base-400);
   transform: scale(1.08);
 }
 
@@ -173,7 +173,7 @@
   font-size: clamp(1.05rem, 1.35vw, 1.5rem);
   font-weight: 400;
   line-height: 1.5;
-  color: var(--base-300);
+  color: var(--base-400);
   text-wrap: pretty;
 }
 
@@ -183,11 +183,11 @@
 }
 
 .bbn-case .bbn-chapter--dark .bbn-chapter-index {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--base-100);
 }
 
 .bbn-case .bbn-chapter--dark .bbn-chapter-copy {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--base-100);
 }
 
 /* ------------------------------------------------------------ outcomes */
@@ -202,11 +202,11 @@
   align-items: end;
   gap: 2rem;
   padding: clamp(2.5rem, 5vh, 4rem) 0;
-  border-top: 1px solid rgba(26, 22, 20, 0.14);
+  border-top: 1px solid var(--base-400);
 }
 
 .bbn-case .bbn-outcome:last-child {
-  border-bottom: 1px solid rgba(26, 22, 20, 0.14);
+  border-bottom: 1px solid var(--base-400);
 }
 
 .bbn-case .bbn-outcome-head {
@@ -227,7 +227,7 @@
 .bbn-case .bbn-outcome-value p {
   font-size: clamp(1.05rem, 1.5vw, 1.6rem);
   line-height: 1.4;
-  color: var(--base-300);
+  color: var(--base-400);
   padding-bottom: 0.5rem;
 }
 

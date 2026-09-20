@@ -83,14 +83,14 @@
   line-height: 0.9;
   letter-spacing: -0.125rem;
   text-align: center;
-  color: var(--base-300);
+  color: var(--base-400);
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
   background-image: linear-gradient(
     0deg,
-    var(--base-300),
-    var(--base-300) 50%,
+    var(--base-400),
+    var(--base-400) 50%,
     var(--base-100) 0
   );
   background-size: 100% 200%;

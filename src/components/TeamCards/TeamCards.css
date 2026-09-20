@@ -40,23 +40,24 @@
 }
 
 #card-1 {
-  background-color: var(--accent-1);
+  background-color: var(--base-500);
 }
 
 #card-2 {
-  background-color: var(--accent-2);
+  background-color: var(--base-400);
 }
 
 #card-3 {
-  background-color: var(--accent-3);
+  background-color: var(--base-100);
+  border: 1px solid var(--base-400);
 }
 
 #card-4 {
-  background-color: var(--accent-4);
+  background-color: var(--base-500);
 }
 
 #card-5 {
-  background-color: var(--accent-5);
+  background-color: var(--base-400);
 }
 
 .card .card-img {
@@ -78,13 +79,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: #fff;
+  color: var(--base-100);
   padding: 1rem;
 }
 
 .card-content h2 {
   font-size: 2.5rem;
   letter-spacing: -0.05rem;
+}
+
+#card-1 .card-content,
+#card-3 .card-content,
+#card-4 .card-content {
+  color: var(--base-400);
 }
 
 @media (max-width: 999px) {

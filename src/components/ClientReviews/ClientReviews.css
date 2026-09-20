@@ -27,7 +27,8 @@
 }
 
 .client-reviews #review-card-1 {
-  background-color: var(--base-200);
+  background-color: var(--base-100);
+  border: 1px solid var(--base-400);
 }
 
 .client-reviews #review-card-2 {
@@ -36,12 +37,13 @@
 }
 
 .client-reviews #review-card-3 {
-  background-color: var(--accent-1);
-  color: var(--base-100);
+  background-color: var(--base-500);
+  color: var(--base-400);
 }
 
 .client-reviews #review-card-4 {
-  background-color: var(--base-200);
+  background-color: var(--base-100);
+  border: 1px solid var(--base-400);
 }
 
 .client-reviews #review-card-5 {
