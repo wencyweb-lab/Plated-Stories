@@ -15,14 +15,29 @@
   will-change: transform, opacity;
 }
 
-.hero-visual-center img,
-.hero-visual-center video,
-.hero-visual-banner img,
-.hero-visual-banner video {
+.hero-media-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  will-change: clip-path, filter, opacity, transform;
+}
+
+.hero-media-layer.is-active {
+  z-index: 1;
+  opacity: 1;
+  visibility: visible;
+}
+
+.hero-media-layer img,
+.hero-media-layer video {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  will-change: transform;
 }
 
 /* Central image — upright and in front. */
