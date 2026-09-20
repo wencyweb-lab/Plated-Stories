@@ -81,12 +81,12 @@ const SECTIONS = [
     name: "Happy Box by Eishika",
     copy: `A baker's own name on the label, so the story behind the box gets the same frame as the bake.`,
     marquee: true,
-    // Two strips: seven frames on the first line, seven more on a second —
-    // `marqueeSplit` keeps that second row from being folded evenly into
-    // the first. Odd rows already reverse (see SeriesSection), so the
-    // second line runs opposite the one above it.
-    marqueeRows: 2,
-    marqueeSplit: [7, 7],
+    // Three strips: seven frames each on the first two lines, six on the
+    // third — `marqueeSplit` keeps rows from being folded evenly into each
+    // other. Odd rows already reverse (see SeriesSection), so the lines
+    // alternate direction top to bottom.
+    marqueeRows: 3,
+    marqueeSplit: [7, 7, 6],
     media: [
       "https://res.cloudinary.com/vaxfpcja/video/upload/v1789937955/1._DIY_KIT.mp4",
       "https://res.cloudinary.com/vaxfpcja/video/upload/v1789937939/2._Plum_Cake.mp4",
@@ -102,6 +102,12 @@ const SECTIONS = [
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1789939369/rstdhyjbuknilm.jpg",
       "https://res.cloudinary.com/vaxfpcja/image/upload/v1789939369/arsetdrytvyb.jpg",
       "https://res.cloudinary.com/vaxfpcja/video/upload/v1789938514/2._Matilda-compressed.mp4",
+      "https://res.cloudinary.com/vaxfpcja/video/upload/v1789939735/1._Hamper-compressed.mp4",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789940064/rstdfygukh.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789940063/rshjuhk.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789940063/strctvybuni.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789940063/4qraesgdchvjbkn.jpg",
+      "https://res.cloudinary.com/vaxfpcja/image/upload/v1789940063/wrstdhvjbknlm.jpg",
     ],
   },
   {
